@@ -1,0 +1,15 @@
+{
+  "projectRoot": "C:\\Code\\ML\\TestMLGen",
+  "environment": {
+    "isWindows": true,
+    "platform": "win32",
+    "venvPath": "C:\\Code\\ML\\TestMLGen\\.venv",
+    "pythonPath": "C:\\Code\\ML\\TestMLGen\\.venv\\Scripts\\python.exe",
+    "activationCommand": ".\\.venv\\Scripts\\Activate.ps1",
+    "activationShell": "PowerShell",
+    "active": true,
+    "activatedAt": "2026-11-13T05:22:56.497Z",
+    "version": "3.14.5",
+    "prefix": "C:\\Code\\ML\\TestMLGen\\.venv"
+  }
+}

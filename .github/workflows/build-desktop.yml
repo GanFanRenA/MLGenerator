@@ -44,7 +44,11 @@ jobs:
 
       - name: Build macOS desktop packages
         if: matrix.artifact == 'macos'
-        run: npm run dist:mac
+        run: |
+          if [ -z "${CSC_LINK}" ]; then
+            unset CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID
+          fi
+          npm run dist:mac
         env:
           CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}

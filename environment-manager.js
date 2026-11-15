@@ -39,7 +39,7 @@ function runFile(command, args, options = {}) {
               stderr.trim() ||
                 stdout.trim() ||
                 error.message ||
-                "Python 命令执行失败。",
+                "The Python command failed.",
             ),
           );
           return;
@@ -95,7 +95,7 @@ async function inspectEnvironment(projectRoot, pythonPath) {
   const details = JSON.parse(lines.at(-1));
 
   if (path.resolve(details.prefix) === path.resolve(details.basePrefix)) {
-    throw new Error("创建出的 Python 仍然使用全局环境。");
+    throw new Error("The newly created Python still uses the global environment.");
   }
 
   return details;
@@ -176,7 +176,7 @@ async function activateExistingEnvironment(projectRoot) {
 
 async function createAndActivateEnvironment() {
   if (operationInProgress) {
-    const error = new Error("正在创建虚拟环境，请稍候。");
+    const error = new Error("A virtual environment is being created. Please wait.");
     error.code = "ENVIRONMENT_BUSY";
     throw error;
   }
@@ -187,7 +187,7 @@ async function createAndActivateEnvironment() {
     const projectRoot = await getProjectRoot();
 
     if (!projectRoot) {
-      const error = new Error("请先在顶栏选择项目文件夹。");
+    const error = new Error("Select a project folder in the top bar first.");
       error.code = "PROJECT_NOT_SELECTED";
       throw error;
     }
@@ -205,14 +205,14 @@ async function createAndActivateEnvironment() {
 
     if (await pathExists(paths.venvPath)) {
       throw new Error(
-        "项目目录中已经存在 .venv，但它不是可用的虚拟环境。请检查或移走该文件夹后重试。",
+        "The project directory already contains .venv, but it is not a usable virtual environment. Inspect or move that folder, then try again.",
       );
     }
 
     const pythonResult = await detectPython();
 
     if (!pythonResult.found) {
-      throw new Error("没有检测到可用于创建虚拟环境的 Python。");
+      throw new Error("No Python installation is available to create the virtual environment.");
     }
 
     try {
@@ -228,12 +228,12 @@ async function createAndActivateEnvironment() {
         },
       );
     } catch (error) {
-      throw new Error(`创建虚拟环境失败：${error.message}`);
+      throw new Error(`Virtual environment creation failed: ${error.message}`);
     }
 
     if (!(await pathExists(paths.pythonPath))) {
       throw new Error(
-        `虚拟环境已创建，但没有找到 Python 可执行文件：${paths.pythonPath}`,
+        `The virtual environment was created, but its Python executable was not found: ${paths.pythonPath}`,
       );
     }
 

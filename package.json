@@ -1,0 +1,83 @@
+{
+  "name": "ml-generator",
+  "version": "1.0.0",
+  "description": "A desktop learning assistant for setting up Python machine learning projects.",
+  "main": "main.js",
+  "author": "ML Generator",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "smoke": "electron . --smoke-test",
+    "test": "node --test",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win portable --x64 --config.electronDist=node_modules/electron/dist",
+    "dist:mac": "electron-builder --mac dmg zip --x64 --arm64",
+    "dist:all": "electron-builder --win portable --x64 --mac dmg zip --x64 --arm64"
+  },
+  "devDependencies": {
+    "electron": "^41.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.mlgenerator.learningassistant",
+    "productName": "ML Generator",
+    "asar": true,
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "app.js",
+      "index.html",
+      "styles.css",
+      "preview-server.js",
+      "environment-manager.js",
+      "folder-browser.js",
+      "folder-picker.js",
+      "library-manager.js",
+      "project-state.js",
+      "python-detector.js",
+      "Classes/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "ML-Generator-${version}-${arch}-portable.${ext}"
+    },
+    "mac": {
+      "icon": "build/icon.png",
+      "category": "public.app-category.developer-tools",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "artifactName": "ML-Generator-${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "ML Generator ${version}"
+    }
+  }
+}

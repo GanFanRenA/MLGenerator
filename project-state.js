@@ -42,7 +42,7 @@ async function validateDirectory(directory) {
   const details = await fs.stat(resolvedPath);
 
   if (!details.isDirectory()) {
-    throw new Error("选择的路径不是文件夹。");
+    throw new Error("The selected path is not a folder.");
   }
 
   return resolvedPath;

@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="机器学习学习助手 Python 环境检测" />
-    <title>ML Generator · 项目准备</title>
+    <meta name="description" content="Machine learning learning assistant and Python environment checker" />
+    <title>ML Generator · Project Setup</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="app.js" defer></script>
   </head>
   <body>
     <div class="page-shell">
       <header class="app-header">
-        <a class="brand" href="#" aria-label="ML Generator 首页">
+        <a class="brand" href="#" aria-label="ML Generator home">
           <span class="brand-mark" aria-hidden="true">
             <span></span>
             <span></span>
@@ -24,7 +24,7 @@
           class="folder-selector"
           id="select-folder-button"
           type="button"
-          title="选择项目根文件夹"
+          title="Select project root folder"
         >
           <span class="folder-selector-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24">
@@ -33,11 +33,11 @@
             </svg>
           </span>
           <span class="folder-selector-copy">
-            <small>项目文件夹</small>
-            <strong id="topbar-folder-name">选择项目文件夹</strong>
-            <span id="topbar-folder-path">点击选择一个项目根目录</span>
+            <small>Project folder</small>
+            <strong id="topbar-folder-name">Select project folder</strong>
+            <span id="topbar-folder-path">Choose a project root directory</span>
           </span>
-          <span class="folder-selector-action" id="select-folder-label">选择</span>
+          <span class="folder-selector-action" id="select-folder-label">Select</span>
           <svg class="folder-selector-chevron" viewBox="0 0 24 24" aria-hidden="true">
             <path d="m9 18 6-6-6-6" />
           </svg>
@@ -50,35 +50,63 @@
           aria-live="polite"
         >
           <span class="status-dot" aria-hidden="true"></span>
-          <span id="header-status-text">正在检测</span>
+          <span id="header-status-text">Checking</span>
         </div>
       </header>
 
       <div class="content-layout">
-        <aside class="course-sidebar" aria-label="课程选择">
+        <aside class="course-sidebar" aria-label="Course selection">
           <div class="course-sidebar-inner">
-            <p class="course-sidebar-title">课程</p>
-            <nav aria-label="课程列表">
+            <p class="course-sidebar-title">Courses</p>
+            <nav aria-label="Course list">
               <a
                 class="course-option is-active"
                 href="#course-setup"
+                data-course="setup"
                 aria-current="page"
               >
                 <span class="course-number" aria-hidden="true">01</span>
                 <span class="course-option-copy">
-                  <strong>设置基础环境</strong>
-                  <small>当前课程</small>
+                  <strong>Set Up Your Environment</strong>
+                  <small>Python and dependencies</small>
+                </span>
+              </a>
+              <a
+                class="course-option"
+                href="#course-classification-preparing-data"
+                data-course="classification-preparing-data"
+              >
+                <span class="course-number" aria-hidden="true">02</span>
+                <span class="course-option-copy">
+                  <strong>Classification: Prepare Data</strong>
+                  <small>Data exploration and cleaning</small>
+                </span>
+              </a>
+              <a
+                class="course-option"
+                href="#course-classification-kmeans"
+                data-course="classification-kmeans"
+              >
+                <span class="course-number" aria-hidden="true">03</span>
+                <span class="course-option-copy">
+                  <strong>Classification: K-Means</strong>
+                  <small>Unsupervised clustering</small>
                 </span>
               </a>
             </nav>
           </div>
         </aside>
 
-        <main class="stage" id="course-setup">
+        <main class="stage">
+        <section
+          class="course-page"
+          id="course-setup"
+          data-course-page="setup"
+        >
         <section class="intro" aria-labelledby="page-title">
-          <span class="eyebrow">环境准备</span>
-          <h1 id="page-title">为学习项目选择一个文件夹。</h1>
-          <p>Python 环境已确认。接下来选择项目根文件夹，后续内容都会保存在这里。</p>
+          <span class="eyebrow">Environment setup</span>
+          <h1 id="page-title">Choose a folder for your learning project.</h1>
+          <p>Python is ready. Next, choose a project root folder where your course files will be stored.</p>
         </section>
 
         <details
@@ -93,8 +121,8 @@
               </svg>
             </span>
             <span class="completed-copy">
-              <span>已完成</span>
-              <strong>Python 环境已就绪</strong>
+              <span>Completed</span>
+              <strong>Python environment ready</strong>
               <small>
                 <span id="complete-version">Python</span>
                 <span class="copy-divider" aria-hidden="true">·</span>
@@ -102,7 +130,7 @@
               </small>
             </span>
             <span class="completed-action">
-              查看
+              View
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m6 9 6 6 6-6" />
               </svg>
@@ -112,16 +140,16 @@
           <div class="completed-details">
             <dl class="completed-detail-list">
               <div>
-                <dt>Python 路径</dt>
+                <dt>Python path</dt>
                 <dd id="complete-python-path">--</dd>
               </div>
               <div>
-                <dt>检测方式</dt>
+                <dt>Detection method</dt>
                 <dd id="complete-python-command">--</dd>
               </div>
             </dl>
             <button class="text-button" id="redetect-complete" type="button">
-              重新检测 Python
+              Check Python again
             </button>
           </div>
         </details>
@@ -141,26 +169,26 @@
               </svg>
             </div>
             <div class="heading-copy">
-              <span class="state-label" id="venv-state-label">正在做</span>
-              <h2 id="venv-title">创建虚拟环境</h2>
+              <span class="state-label" id="venv-state-label">In progress</span>
+              <h2 id="venv-title">Create virtual environment</h2>
             </div>
-            <span class="step-count">第 2 步</span>
+            <span class="step-count">Step 2</span>
           </div>
 
           <p class="state-description" id="venv-description">
-            请在顶栏选择项目文件夹，我们会在这里创建独立的 Python 环境。
+            Select a project folder in the top bar. We will create an isolated Python environment here.
           </p>
 
           <div class="venv-location">
-            <span>项目根目录</span>
-            <code id="venv-project-path">尚未选择</code>
+            <span>Project root</span>
+            <code id="venv-project-path">Not selected</code>
           </div>
 
           <div class="venv-working" id="venv-working" role="status" hidden>
             <span class="spinner" aria-hidden="true"></span>
             <div>
-              <strong>正在创建并激活虚拟环境</strong>
-              <span>首次创建可能需要十几秒，请不要关闭窗口。</span>
+              <strong>Creating and activating the virtual environment</strong>
+              <span>The first setup can take a few seconds. Please keep this window open.</span>
             </div>
           </div>
 
@@ -172,14 +200,14 @@
                 </svg>
               </span>
               <div>
-                <strong>虚拟环境已创建并激活</strong>
-                <p>后续 Python 操作将使用这个项目环境。</p>
+                <strong>Virtual environment created and activated</strong>
+                <p>Future Python commands will use this project environment.</p>
               </div>
             </div>
 
             <dl class="venv-details">
               <div>
-                <dt>环境位置</dt>
+                <dt>Environment location</dt>
                 <dd id="venv-path">--</dd>
               </div>
               <div>
@@ -190,8 +218,8 @@
 
             <div class="activation-command">
               <div>
-                <span id="activation-label">命令行激活</span>
-                <p>如果需要在终端中手动使用环境，可以运行：</p>
+                <span id="activation-label">Activate in terminal</span>
+                <p>To use this environment in a terminal manually, run:</p>
               </div>
               <code id="activation-command-value">--</code>
             </div>
@@ -200,12 +228,12 @@
           <p class="venv-feedback" id="venv-feedback" role="status"></p>
 
           <div class="venv-actions">
-            <span id="venv-hint">先在顶栏选择项目文件夹</span>
+            <span id="venv-hint">Select a project folder in the top bar first</span>
             <button class="venv-button" id="create-venv-button" type="button" disabled>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m12 3 1.4 4.6L18 9l-4.6 1.4L12 15l-1.4-4.6L6 9l4.6-1.4L12 3Z" />
               </svg>
-              <span id="create-venv-label">选择文件夹后创建</span>
+              <span id="create-venv-label">Select a folder to begin</span>
             </button>
           </div>
         </section>
@@ -218,12 +246,12 @@
               </svg>
             </span>
             <span class="completed-copy">
-              <span>已完成</span>
-              <strong>虚拟环境已创建并激活</strong>
-              <small id="venv-complete-summary">Python 项目环境</small>
+              <span>Completed</span>
+              <strong>Virtual environment created and activated</strong>
+              <small id="venv-complete-summary">Project Python environment</small>
             </span>
             <span class="completed-action">
-              查看
+              View
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m6 9 6 6 6-6" />
               </svg>
@@ -233,7 +261,7 @@
           <div class="completed-details">
             <dl class="completed-detail-list">
               <div>
-                <dt>环境位置</dt>
+                <dt>Environment location</dt>
                 <dd id="venv-complete-path">--</dd>
               </div>
               <div>
@@ -241,7 +269,7 @@
                 <dd id="venv-complete-python">--</dd>
               </div>
               <div>
-                <dt>终端激活</dt>
+                <dt>Terminal activation</dt>
                 <dd><code id="venv-complete-activation">--</code></dd>
               </div>
             </dl>
@@ -263,29 +291,37 @@
               </svg>
             </div>
             <div class="heading-copy">
-              <span class="state-label" id="library-state-label">正在做</span>
-              <h2 id="library-title">导入 Python 库</h2>
+              <span class="state-label" id="library-state-label">In progress</span>
+              <h2 id="library-title">Create dependency manifest</h2>
             </div>
-            <span class="step-count">第 3 步</span>
+            <span class="step-count">Step 3</span>
           </div>
 
           <p class="state-description">
-            选择课程中需要使用的库。软件会把它们安装到当前项目的虚拟环境中。
+            Substep 1: Select the packages required by the course, then generate requirements.txt.
           </p>
+
+          <div class="requirements-guide">
+            <strong>What is requirements.txt?</strong>
+            <p>
+              It is a project dependency manifest that records the Python packages this
+              project needs. On another computer or when collaborating, others can install the same dependencies from this file.
+            </p>
+          </div>
 
           <div
             class="library-list"
             id="library-list"
-            aria-label="可选 Python 库"
+            aria-label="Available Python packages"
           >
-            <p class="library-loading">正在读取已安装的 Python 库...</p>
+            <p class="library-loading">Loading installed Python packages...</p>
           </div>
 
           <div class="library-working" id="library-working" role="status" hidden>
             <span class="spinner" aria-hidden="true"></span>
             <div>
-              <strong>正在安装选中的 Python 库</strong>
-              <span>下载时间取决于网络状况，请保持窗口开启。</span>
+              <strong>Generating requirements.txt</strong>
+              <span>The dependency manifest will be saved in the current project folder.</span>
             </div>
           </div>
 
@@ -294,22 +330,147 @@
           <div class="library-actions">
             <div class="library-selection-summary">
               <button class="library-select-all" id="select-all-libraries" type="button">
-                全选
+                Select all
               </button>
-              <span id="selected-library-count">尚未选择</span>
+              <span id="selected-library-count">Nothing selected</span>
             </div>
             <button
               class="library-install-button"
-              id="install-libraries-button"
+              id="generate-requirements-button"
               type="button"
               disabled
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3v12m0 0-4-4m4 4 4-4" />
-                <path d="M5 19h14" />
+                <path d="M6 3.5h8l4 4V20H6V3.5Z" />
+                <path d="M14 3.5V8h4M9 12h6M9 15.5h4" />
               </svg>
-              <span id="install-libraries-label">安装选中库</span>
+              <span id="generate-requirements-label">Generate requirements.txt</span>
             </button>
+          </div>
+        </section>
+
+        <details class="completed-group" id="requirements-complete" hidden>
+          <summary class="completed-summary">
+            <span class="completed-marker" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="m6.5 12.5 3.5 3.5 7.5-8" />
+              </svg>
+            </span>
+            <span class="completed-copy">
+              <span>Substep 1 complete</span>
+              <strong>requirements.txt generated</strong>
+              <small id="requirements-complete-summary">Dependency manifest saved to the project</small>
+            </span>
+            <span class="completed-action">
+              View
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </span>
+          </summary>
+
+          <div class="completed-details">
+            <dl class="completed-detail-list">
+              <div>
+                <dt>File location</dt>
+                <dd id="requirements-complete-path">requirements.txt</dd>
+              </div>
+            </dl>
+          </div>
+        </details>
+
+        <section
+          class="library-card"
+          id="requirements-install-card"
+          data-state="ready"
+          aria-labelledby="requirements-install-title"
+          hidden
+        >
+          <div class="card-heading">
+            <div class="library-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M5 5h14v14H5z" />
+                <path d="m8 10 2 2-2 2M12.5 14h3.5" />
+              </svg>
+            </div>
+            <div class="heading-copy">
+              <span class="state-label" id="requirements-install-state-label">
+                In progress
+              </span>
+              <h2 id="requirements-install-title">Install project dependencies</h2>
+            </div>
+            <span class="step-count">Step 4</span>
+          </div>
+
+          <p class="state-description">
+            Substep 2: Open a terminal in the project root and run the command below. pip
+            will read requirements.txt and install every package listed in it.
+          </p>
+
+          <div class="requirements-command-panel">
+            <span>Run from the project root</span>
+            <div class="requirements-command">
+              <code id="requirements-install-command">
+                .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+              </code>
+              <button
+                class="requirements-copy-button"
+                id="copy-requirements-command"
+                type="button"
+              >
+                Copy command
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="requirements-status-list"
+            id="requirements-status-list"
+            aria-label="requirements.txt installation status"
+          ></div>
+
+          <div
+            class="library-working"
+            id="requirements-check-working"
+            role="status"
+            hidden
+          >
+            <span class="spinner" aria-hidden="true"></span>
+            <div>
+              <strong>Checking installation results</strong>
+              <span>Each package and version in requirements.txt will be checked.</span>
+            </div>
+          </div>
+
+          <p
+            class="library-feedback"
+            id="requirements-install-feedback"
+            role="status"
+          ></p>
+
+          <div class="requirements-check-actions">
+            <span id="requirements-install-progress">Waiting for check</span>
+            <div class="requirements-action-buttons">
+              <button
+                class="requirements-copy-button"
+                id="repair-requirements-button"
+                type="button"
+                title="If the installation command reports an encoding error, regenerate an ASCII-only dependency manifest"
+              >
+                Regenerate manifest
+              </button>
+              <button
+                class="library-install-button"
+                id="check-requirements-button"
+                type="button"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20 11a8 8 0 1 1-2.3-5.7" />
+                  <path d="M20 4v7h-7" />
+                </svg>
+                <span id="check-requirements-label">Check installation</span>
+              </button>
+            </div>
           </div>
         </section>
 
@@ -321,12 +482,14 @@
               </svg>
             </span>
             <span class="completed-copy">
-              <span>已完成</span>
-              <strong>Python 库已准备好</strong>
-              <small>第一课程所需库均已安装</small>
+              <span>Completed</span>
+              <strong>Python packages ready</strong>
+              <small id="library-complete-summary">
+                All packages in requirements.txt are installed
+              </small>
             </span>
             <span class="completed-action">
-              查看
+              View
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m6 9 6 6 6-6" />
               </svg>
@@ -358,23 +521,23 @@
             </div>
 
             <div class="heading-copy">
-              <span class="state-label" id="state-label">正在检测</span>
-              <h2 id="state-title">正在检查 Python...</h2>
+              <span class="state-label" id="state-label">Checking</span>
+              <h2 id="state-title">Checking Python...</h2>
             </div>
 
-            <span class="step-count">第 1 步</span>
+            <span class="step-count">Step 1</span>
           </div>
 
           <p class="state-description" id="state-description">
-            请稍候，我们正在查找电脑上可用的 Python。
+            Please wait while we look for an available Python installation on this computer.
           </p>
 
           <div class="state-view checking-view" id="checking-view">
             <div class="working-state" role="status">
               <span class="spinner" aria-hidden="true"></span>
               <div>
-                <strong>正在读取 Python 版本</strong>
-                <span>通常只需要几秒钟。</span>
+                <strong>Reading the Python version</strong>
+                <span>This usually takes only a few seconds.</span>
               </div>
             </div>
           </div>
@@ -382,7 +545,7 @@
           <div class="state-view found-view" id="found-view" hidden>
             <div class="version-panel">
               <div>
-                <span class="detail-label">当前版本</span>
+                <span class="detail-label">Current version</span>
                 <strong class="version-number" id="python-version">--</strong>
               </div>
               <div class="version-meta">
@@ -393,11 +556,11 @@
 
             <dl class="environment-details">
               <div>
-                <dt>Python 路径</dt>
+                <dt>Python path</dt>
                 <dd id="python-path">--</dd>
               </div>
               <div>
-                <dt>检测方式</dt>
+                <dt>Detection method</dt>
                 <dd id="python-command">--</dd>
               </div>
             </dl>
@@ -410,36 +573,36 @@
                 <path d="M12 17h.01" />
                 <circle cx="12" cy="12" r="9" />
               </svg>
-              <p>没有找到可用的 Python。安装完成后回到这里重新检测即可。</p>
+              <p>No usable Python installation was found. Install Python, then return here and check again.</p>
             </div>
 
             <ol class="install-steps">
               <li>
                 <span>1</span>
                 <div>
-                  <strong>前往 Python 官方下载页</strong>
-                  <p>点击下方链接，打开 Python 官方 Windows 下载页面。</p>
+                  <strong>Open the official Python download page</strong>
+                  <p>Use the link below to open the official Python download page for Windows.</p>
                 </div>
               </li>
               <li>
                 <span>2</span>
                 <div>
-                  <strong>下载并运行安装程序</strong>
-                  <p>选择最新的稳定版 Windows installer (64-bit)。</p>
+                  <strong>Download and run the installer</strong>
+                  <p>Choose the latest stable Windows installer (64-bit).</p>
                 </div>
               </li>
               <li>
                 <span>3</span>
                 <div>
-                  <strong>勾选 Add python.exe to PATH</strong>
-                  <p>这是让软件能够自动找到 Python 的关键选项。</p>
+                  <strong>Select Add python.exe to PATH</strong>
+                  <p>This option lets the app find Python automatically.</p>
                 </div>
               </li>
               <li>
                 <span>4</span>
                 <div>
-                  <strong>安装完成后重新检测</strong>
-                  <p>无需重启电脑，点击下方“重新检测”按钮。</p>
+                  <strong>Check again after installation</strong>
+                  <p>You do not need to restart your computer. Use the “Check again” button below.</p>
                 </div>
               </li>
             </ol>
@@ -450,7 +613,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              前往 Python 官方下载页
+              Open the official Python download page
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M14 5h5v5M19 5l-8 8" />
                 <path d="M19 14v5H5V5h5" />
@@ -465,7 +628,7 @@
                 <path d="M12 17h.01" />
                 <circle cx="12" cy="12" r="9" />
               </svg>
-              <p id="error-message">无法完成环境检测，请稍后重试。</p>
+              <p id="error-message">Environment detection could not be completed. Please try again.</p>
             </div>
           </div>
 
@@ -475,110 +638,1888 @@
                 <path d="M20 7v5h-5" />
                 <path d="M19 12a7 7 0 1 0-2 5" />
               </svg>
-              <span id="redetect-label">重新检测</span>
+              <span id="redetect-label">Check again</span>
             </button>
             <span class="checked-time" id="checked-time"></span>
           </div>
         </section>
 
-        <dialog
-          class="folder-dialog"
-          id="folder-dialog"
-          aria-labelledby="folder-dialog-title"
+        <section
+          class="course-exam"
+          data-course-exam="setup"
+          aria-labelledby="setup-final-exam-title"
+          hidden
         >
-          <div class="dialog-header">
-            <div>
-              <span class="dialog-kicker">PROJECT ROOT</span>
-              <h2 id="folder-dialog-title">选择项目文件夹</h2>
-            </div>
-            <button
-              class="dialog-close"
-              id="close-folder-dialog"
-              type="button"
-              aria-label="关闭文件夹选择器"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m7 7 10 10M17 7 7 17" />
-              </svg>
-            </button>
+          <header class="course-exam-heading">
+            <span data-course-exam-label>Environment setup · Final exam</span>
+            <h2 id="setup-final-exam-title" data-course-exam-title></h2>
+            <p data-course-exam-description></p>
+          </header>
+          <div class="course-exam-meta">
+            <span data-course-exam-answered>0 / 6 answered</span>
+            <span data-course-exam-requirement></span>
+            <strong data-course-exam-attempt>Not attempted</strong>
           </div>
-
-          <div class="folder-toolbar">
-            <button
-              class="up-button"
-              id="folder-up-button"
-              type="button"
-              aria-label="返回上一级文件夹"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m9 14 3-3 3 3" />
-              </svg>
-            </button>
-            <p id="current-folder-path">正在读取...</p>
-            <button
-              class="new-folder-button"
-              id="show-new-folder-button"
-              type="button"
-              disabled
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-              新建文件夹
-            </button>
-          </div>
-
-          <form class="new-folder-form" id="new-folder-form" hidden>
-            <label for="new-folder-name">文件夹名称</label>
-            <div>
-              <input
-                id="new-folder-name"
-                name="folderName"
-                type="text"
-                maxlength="120"
-                autocomplete="off"
-                placeholder="例如：my-ml-project"
-              />
+          <div
+            class="course-exam-questions"
+            data-course-exam-questions
+          ></div>
+          <div class="course-exam-footer">
+            <p data-course-exam-feedback role="status"></p>
+            <div class="course-exam-actions">
               <button
-                class="new-folder-submit"
-                id="create-folder-button"
-                type="submit"
-              >
-                创建
-              </button>
-              <button
-                class="new-folder-cancel"
-                id="cancel-new-folder-button"
+                class="lesson-primary-button"
                 type="button"
+                data-exam-action="check"
               >
-                取消
+                Submit final exam
               </button>
-            </div>
-            <p id="new-folder-error" role="alert"></p>
-          </form>
-
-          <div class="drive-list" id="drive-list" aria-label="磁盘列表"></div>
-          <div class="folder-list" id="folder-list" aria-live="polite"></div>
-          <p class="folder-error" id="folder-error" role="alert"></p>
-
-          <div class="dialog-footer">
-            <span>请选择一个文件夹作为项目根目录</span>
-            <div>
-              <button class="dialog-button secondary" id="cancel-folder-dialog" type="button">
-                取消
-              </button>
-              <button class="dialog-button primary" id="confirm-folder-button" type="button">
-                选择此文件夹
+              <button
+                class="lesson-secondary-button"
+                type="button"
+                data-exam-action="retry"
+                hidden
+              >
+                Try again
               </button>
             </div>
           </div>
-        </dialog>
+        </section>
+
+        </section>
+
+        <section
+          class="course-page classification-course"
+          id="course-classification-preparing-data"
+          data-course-page="classification-preparing-data"
+          data-lesson-storage-key="ml-generator:classification-preparing-data:v1"
+          hidden
+        >
+          <section class="intro classification-intro" aria-labelledby="classification-title">
+            <span class="eyebrow">Classification · Lesson 1</span>
+            <h1 id="classification-title">Understand the data before clustering.</h1>
+            <p>
+              In this lesson, you will practice exploratory analysis with Nigerian music data.
+              You will inspect missing values, identify the main genres, filter the training samples,
+              and use plots to see which features might form clusters.
+            </p>
+          </section>
+
+          <div class="lesson-overview" aria-label="Lesson progress">
+            <div>
+              <span>Prepare data</span>
+              <strong id="lesson-progress-count" data-lesson-progress-count>0 / 6 steps complete</strong>
+            </div>
+            <div
+              class="lesson-progress-track"
+              role="progressbar"
+              aria-label="Lesson completion progress"
+              aria-valuemin="0"
+              aria-valuemax="6"
+              aria-valuenow="0"
+            >
+              <span id="lesson-progress-bar" data-lesson-progress-bar></span>
+            </div>
+            <p id="lesson-progress-detail" data-lesson-progress-detail>Turn a raw CSV into clean data ready for k-means.</p>
+            <div class="lesson-history" id="lesson-history" data-lesson-history aria-label="Step history"></div>
+          </div>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="1"
+            data-status="current"
+            aria-labelledby="lesson-step-1-title"
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">01</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="lesson-step-1-title">Create model.py and print the data</h2>
+              </div>
+              <span class="lesson-duration">About 10 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Create <code>model.py</code>, import the data tools, and load the CSV
+                <code>nigerian_spotify_songs.csv</code> into a DataFrame.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Load and print the raw data</strong>
+                  </div>
+                  <small>File: <code>model.py</code> in the project root; working directory: project root.</small>
+                </div>
+                <pre><code># TODO: Create this file as model.py, then run `python model.py` from the project root.
+# model.py
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# TODO: Import Seaborn with the alias sns
+import ____ as sns
+
+# TODO: Read the course data file
+df = pd.read_csv("____")
+
+# TODO: Print the first 5 rows
+print(____)</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li>The console prints a table with rows <code>0</code> through <code>4</code> and 16 columns.</li>
+                  <li>The columns are <code>name</code>, <code>album</code>, <code>artist</code>, <code>artist_top_genre</code>, <code>release_date</code>, <code>length</code>, <code>popularity</code>, <code>danceability</code>, <code>acousticness</code>, <code>energy</code>, <code>instrumentalness</code>, <code>liveness</code>, <code>loudness</code>, <code>speechiness</code>, <code>tempo</code>, and <code>time_signature</code>.</li>
+                  <li>The five names in column <code>name</code> are <code>Sparky</code>, <code>shuga rush</code>, <code>LITT!</code>, <code>Confident / Feeling Cool</code>, and <code>wanted you</code>.</li>
+                  <li>Row <code>0</code> contains <code>album="Mandy &amp; The Jungle"</code>, <code>artist="Cruel Santino"</code>, <code>artist_top_genre="alternative r&amp;b"</code>, <code>release_date=2019</code>, <code>popularity=48</code>, <code>danceability=0.666</code>, and <code>energy=0.42</code>.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Try it yourself first</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="lesson-step-1-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="lesson-step-1-code"><code># model.py
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+
+df = pd.read_csv("nigerian_spotify_songs.csv")
+print(df.head())</code></pre>
+                  <p>
+                    Place <code>nigerian_spotify_songs.csv</code> in the same folder as
+                    <code>model.py</code>. If it is inside a <code>data</code> subfolder, use
+                    <code>"data/nigerian_spotify_songs.csv"</code> instead. The path must
+                    point to the file where Python can find it.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button
+                  class="lesson-secondary-button"
+                  type="button"
+                  data-lesson-action="skip"
+                >
+                  Skip step
+                </button>
+                <button
+                  class="lesson-primary-button"
+                  type="button"
+                  data-lesson-action="complete"
+                >
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>What should <code>df.head()</code> help you confirm first?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="lesson-quiz-1" value="preview" data-correct="true" />
+                    <span>The file was loaded correctly and the columns and values are as expected.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-1" value="cluster" />
+                    <span>The data has already been divided into clusters.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-1" value="clean" />
+                    <span>All missing values have been removed.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Inspect the data
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="2"
+            data-status="locked"
+            aria-labelledby="lesson-step-2-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">02</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="lesson-step-2-title">Inspect data quality</h2>
+              </div>
+              <span class="lesson-duration">About 8 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Examine the data through its structure, missing values, and summary statistics to identify what needs attention.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Inspect the data from three angles</strong>
+                  </div>
+                  <small>All three outputs use the same loaded DataFrame.</small>
+                </div>
+                <pre><code># 1. TODO: View row and column counts, data types, and non-null counts
+df.____()
+
+# 2. TODO: Count missing values in each column
+df.____().sum()
+
+# 3. TODO: View the mean, standard deviation, minimum, and maximum of numeric columns
+df.____()</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li><code>df.info()</code> reports <code>RangeIndex: 530 entries</code>, 16 total columns, and 530 non-null values in every column.</li>
+                  <li>The data types are 8 <code>float64</code>, 4 <code>int64</code>, and 4 text/string columns (<code>object</code> in older pandas versions and <code>str</code> in pandas 3+).</li>
+                  <li><code>df.isnull().sum()</code> prints 16 values, and every value is <code>0</code>.</li>
+                  <li><code>df.describe()</code> reports <code>count = 530</code> for all 12 numeric columns.</li>
+                  <li><code>popularity</code> has <code>mean = 17.507547</code>, <code>min = 0</code>, <code>50% = 13</code>, and <code>max = 73</code>.</li>
+                  <li><code>danceability</code> has <code>mean = 0.741619</code>, <code>min = 0.255</code>, and <code>max = 0.966</code>.</li>
+                  <li><code>release_date</code> ranges from <code>1998</code> to <code>2020</code>.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Compare the question each output answers</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="lesson-step-2-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="lesson-step-2-code"><code>df.info()
+df.isnull().sum()
+df.describe()</code></pre>
+                  <p>
+                    <code>info()</code> shows structure and types, <code>isnull().sum()</code>
+                    counts missing values precisely, and <code>describe()</code> summarizes numeric distributions.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>Which output most directly lists the number of missing values in each column?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="lesson-quiz-2" value="describe" />
+                    <span><code>df.describe()</code></span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-2" value="isnull" data-correct="true" />
+                    <span><code>df.isnull().sum()</code></span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-2" value="head" />
+                    <span><code>df.head()</code></span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Explore genres
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="3"
+            data-status="locked"
+            aria-labelledby="lesson-step-3-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">03</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="lesson-step-3-title">Explore genre distribution</h2>
+              </div>
+              <span class="lesson-duration">About 10 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Count the songs in each genre and use a bar chart to identify the dominant genres.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Plot the top 5 genres</strong>
+                  </div>
+                  <small>The chart uses category names on x and genre counts on y.</small>
+                </div>
+                <pre><code># TODO: Count how often each value appears in artist_top_genre
+top = df['____'].____()
+# TODO: Print the first 5 categories and counts
+print(top.____)
+
+plt.figure(figsize=(10, 7))
+# TODO: Use the top 5 genre names for x and their counts for y
+sns.____(x=top[:5].index, y=top[:5].____)
+plt.xticks(rotation=45)
+plt.title('Top genres', color='blue')
+plt.show()</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li><code>top[:5]</code> contains exactly these values in this order: <code>afro dancehall: 328</code>, <code>afropop: 90</code>, <code>Missing: 53</code>, <code>nigerian pop: 24</code>, and <code>azontobeats: 8</code>.</li>
+                  <li>The x-axis labels match those five categories in the same order.</li>
+                  <li>The five bar heights are <code>328</code>, <code>90</code>, <code>53</code>, <code>24</code>, and <code>8</code>.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Consider what index and values represent</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="lesson-step-3-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="lesson-step-3-code"><code>top = df['artist_top_genre'].value_counts()
+print(top[:5])
+
+plt.figure(figsize=(10, 7))
+sns.barplot(x=top[:5].index, y=top[:5].values)
+plt.xticks(rotation=45)
+plt.title('Top genres', color='blue')
+plt.show()</code></pre>
+                  <p>
+                    <code>index</code> contains the genre names and <code>values</code>
+                    contains their counts. Change <code>[:5]</code> to include more categories.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>Why use <code>value_counts()</code> before plotting?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="lesson-quiz-3" value="count" data-correct="true" />
+                    <span>It aggregates individual songs into a count for each genre first.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-3" value="remove" />
+                    <span>It automatically removes every song whose values are all 0.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-3" value="label" />
+                    <span>It assigns a new genre label to every song.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Clean the samples
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="4"
+            data-status="locked"
+            aria-labelledby="lesson-step-4-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">04</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="lesson-step-4-title">Clean the training samples</h2>
+              </div>
+              <span class="lesson-duration">About 12 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Remove songs with missing genres or no popularity signal, keeping only the three main genres for later clustering.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Create a more focused training dataset</strong>
+                  </div>
+                  <small>The filtered DataFrame keeps only the selected genres and positive popularity values.</small>
+                </div>
+                <pre><code># 1. TODO: Remove rows whose genre is marked "Missing"
+df = df[df['artist_top_genre'] != '____']
+
+# 2. TODO: Keep only the three main genres; use | between conditions and wrap each condition in parentheses
+df = df[
+    (df['artist_top_genre'] == 'afro dancehall')
+    | (df['artist_top_genre'] == '____')
+    | (df['artist_top_genre'] == 'nigerian pop')
+]
+
+# 3. TODO: Remove songs with popularity equal to 0
+df = df[df['popularity'] ____ 0]
+
+# TODO: Print the cleaned DataFrame shape, genres, and minimum popularity
+print(df.____)
+print(df['artist_top_genre'].unique())
+print(df['artist_top_genre'].____())
+print(df['popularity'].min())</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li><code>df.shape</code> prints <code>(286, 16)</code>.</li>
+                  <li><code>df['artist_top_genre'].unique()</code> prints <code>['afro dancehall' 'afropop' 'nigerian pop']</code>.</li>
+                  <li><code>df['artist_top_genre'].value_counts()</code> prints <code>afro dancehall: 206</code>, <code>afropop: 61</code>, and <code>nigerian pop: 19</code>.</li>
+                  <li><code>df['popularity'].min()</code> prints <code>1</code>.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Pay attention to parentheses around each filter condition</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="lesson-step-4-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="lesson-step-4-code"><code>df = df[df['artist_top_genre'] != 'Missing']
+
+df = df[
+    (df['artist_top_genre'] == 'afro dancehall')
+    | (df['artist_top_genre'] == 'afropop')
+    | (df['artist_top_genre'] == 'nigerian pop')
+]
+
+df = df[df['popularity'] > 0]
+
+print(df.shape)
+print(df['artist_top_genre'].unique())
+print(df['artist_top_genre'].value_counts())
+print(df['popularity'].min())</code></pre>
+                  <p>
+                    In pandas, <code>|</code> means “or.” Wrap each condition in parentheses;
+                    otherwise, operator precedence can make the result differ from what you expect.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>What does removing songs with <code>popularity == 0</code> mainly accomplish?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="lesson-quiz-4" value="noise" data-correct="true" />
+                    <span>It removes samples without a popularity signal and reduces noise in later analysis.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-4" value="genre" />
+                    <span>It reclassifies every song into one of only three genres.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-4" value="fill" />
+                    <span>It automatically fills their popularity with the average value.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Analyze correlations
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="5"
+            data-status="locked"
+            aria-labelledby="lesson-step-5-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">05</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="lesson-step-5-title">Analyze feature correlations</h2>
+              </div>
+              <span class="lesson-duration">About 10 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Calculate correlations between numeric features and use a heatmap to find features that tend to change together.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Plot the numeric feature correlation matrix</strong>
+                  </div>
+                  <small>The matrix contains the 12 numeric columns only.</small>
+                </div>
+                <pre><code># TODO: Calculate correlations for numeric columns
+corrmat = df.corr(____=True)
+
+f, ax = plt.subplots(figsize=(12, 9))
+# TODO: Render the correlation matrix as a heatmap
+sns.____(corrmat, vmax=.8, square=True, ax=ax)
+# TODO: Print the matrix shape and two selected correlations
+print(corrmat.____)
+print(corrmat.loc[____, ____])
+print(corrmat.loc[____, ____])
+plt.show()</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li><code>corrmat.shape</code> is <code>(12, 12)</code>, and every diagonal value is <code>1.0</code>.</li>
+                  <li><code>corrmat.loc["energy", "loudness"]</code> prints <code>0.7239457228237408</code>.</li>
+                  <li><code>corrmat.loc["release_date", "length"]</code> is approximately <code>-0.460129</code>.</li>
+                  <li>The heatmap uses a single color for the diagonal and the strongest positive color pairing is between <code>energy</code> and <code>loudness</code>.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Confirm what <code>numeric_only</code> does</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="lesson-step-5-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="lesson-step-5-code"><code>corrmat = df.corr(numeric_only=True)
+
+f, ax = plt.subplots(figsize=(12, 9))
+sns.heatmap(corrmat, vmax=.8, square=True, ax=ax)
+print(corrmat.shape)
+print(corrmat.loc["energy", "loudness"])
+print(corrmat.loc["release_date", "length"])
+plt.show()</code></pre>
+                  <p>
+                    <code>numeric_only=True</code> skips text columns such as song and album names,
+                    avoiding attempts to calculate correlations for text.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>What is the most accurate interpretation of a correlation close to 1?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="lesson-quiz-5" value="cause" />
+                    <span>One variable always causes the other variable to increase.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-5" value="together" data-correct="true" />
+                    <span>The two variables tend to increase together, but that does not prove causation.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-5" value="missing" />
+                    <span>Neither variable has missing values.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Inspect distributions
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="6"
+            data-status="locked"
+            aria-labelledby="lesson-step-6-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">06</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="lesson-step-6-title">Inspect possible cluster shapes</h2>
+              </div>
+              <span class="lesson-duration">About 12 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Compare popularity and danceability across genres to see whether the data shows clear groups.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Inspect overlap with density and scatter plots</strong>
+                  </div>
+                  <small>Both plots use <code>popularity</code>, <code>danceability</code>, and <code>artist_top_genre</code>.</small>
+                </div>
+                <pre><code>sns.set_theme(style="ticks")
+
+# TODO: Print the filtered DataFrame shape
+print(df.____)
+
+# TODO: Plot the joint density of popularity and danceability, colored by genre
+g = sns.____(
+    data=df,
+    x="popularity",
+    y="danceability",
+    hue="____",
+    kind="kde",
+)
+plt.show()
+
+# TODO: Use a scatter plot to inspect the same two features
+sns.____(
+    data=df,
+    x="popularity",
+    y="danceability",
+    hue="artist_top_genre",
+)
+plt.show()</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li>Both plots use 286 observations and show three colors, one for each remaining genre.</li>
+                  <li>The KDE plot contains three overlapping sets of density contours concentrated around moderate popularity and high danceability.</li>
+                  <li>The scatter plot contains 286 points with substantial overlap between the three genres.</li>
+                  <li>The points do not form three completely separated groups.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Compare the question each plot helps answer</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="lesson-step-6-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="lesson-step-6-code"><code>sns.set_theme(style="ticks")
+
+print(df.shape)
+
+g = sns.jointplot(
+    data=df,
+    x="popularity",
+    y="danceability",
+    hue="artist_top_genre",
+    kind="kde",
+)
+plt.show()
+
+sns.scatterplot(
+    data=df,
+    x="popularity",
+    y="danceability",
+    hue="artist_top_genre",
+)
+plt.show()</code></pre>
+                  <p>
+                    KDE summarizes where points concentrate with continuous density contours, while a scatter plot preserves each song's position.
+                    Looking at both together is more reliable than relying on either one alone.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>What is the most valuable purpose of inspecting distributions before starting k-means?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="lesson-quiz-6" value="shape" data-correct="true" />
+                    <span>Estimate how the samples are distributed and whether groups overlap, which informs the choice of clustering approach.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-6" value="exact" />
+                    <span>Calculate exactly how many clusters k-means will produce.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="lesson-quiz-6" value="label" />
+                    <span>Automatically assign the correct cluster label to every song.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Complete lesson
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="lesson-finish" id="lesson-finish" data-lesson-finish hidden aria-live="polite">
+            <span class="lesson-finish-mark" id="lesson-finish-mark" data-lesson-finish-mark aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="m6.5 12.5 3.5 3.5 7.5-8" />
+              </svg>
+            </span>
+            <div>
+              <span>Prepare data · Lesson complete</span>
+              <h2 id="lesson-finish-title" data-lesson-finish-title>You now have a dataset ready for clustering.</h2>
+              <p id="lesson-finish-copy" data-lesson-finish-copy></p>
+              <button
+                class="lesson-primary-button lesson-finish-exam-link"
+                type="button"
+                data-course-exam-jump
+              >
+                Take the final exam
+              </button>
+            </div>
+          </section>
+
+          <section
+            class="course-exam"
+            data-course-exam="classification-preparing-data"
+            aria-labelledby="prepare-final-exam-title"
+            hidden
+          >
+            <header class="course-exam-heading">
+              <span data-course-exam-label>Prepare data · Final exam</span>
+              <h2 id="prepare-final-exam-title" data-course-exam-title></h2>
+              <p data-course-exam-description></p>
+            </header>
+            <div class="course-exam-meta">
+              <span data-course-exam-answered>0 / 6 answered</span>
+              <span data-course-exam-requirement></span>
+              <strong data-course-exam-attempt>Not attempted</strong>
+            </div>
+            <div
+              class="course-exam-questions"
+              data-course-exam-questions
+            ></div>
+            <div class="course-exam-footer">
+              <p data-course-exam-feedback role="status"></p>
+              <div class="course-exam-actions">
+                <button
+                  class="lesson-primary-button"
+                  type="button"
+                  data-exam-action="check"
+                >
+                  Submit final exam
+                </button>
+                <button
+                  class="lesson-secondary-button"
+                  type="button"
+                  data-exam-action="retry"
+                  hidden
+                >
+                  Try again
+                </button>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section
+          class="course-page classification-course"
+          id="course-classification-kmeans"
+          data-course-page="classification-kmeans"
+          data-lesson-storage-key="ml-generator:classification-kmeans:v1"
+          hidden
+        >
+          <section class="intro classification-intro" aria-labelledby="kmeans-title">
+            <span class="eyebrow">Classification · Lesson 2</span>
+            <h1 id="kmeans-title">Let K-Means find structure in the music data.</h1>
+            <p>
+              Continue with the cleaned Nigerian music dataset from Lesson 1.
+              You will compare feature scales, standardize the measurements, choose
+              a cluster count, fit K-Means, and evaluate the groups without treating
+              genre labels as answers.
+            </p>
+          </section>
+
+          <div class="lesson-overview" aria-label="K-Means lesson progress">
+            <div>
+              <span>K-Means clustering</span>
+              <strong data-lesson-progress-count>0 / 6 steps complete</strong>
+            </div>
+            <div
+              class="lesson-progress-track"
+              role="progressbar"
+              aria-label="K-Means lesson completion progress"
+              aria-valuemin="0"
+              aria-valuemax="6"
+              aria-valuenow="0"
+            >
+              <span data-lesson-progress-bar></span>
+            </div>
+            <p data-lesson-progress-detail>
+              Move from feature preparation to an interpreted cluster model.
+            </p>
+            <div class="lesson-history" data-lesson-history aria-label="K-Means step history"></div>
+          </div>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="1"
+            data-status="current"
+            aria-labelledby="kmeans-step-1-title"
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">01</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="kmeans-step-1-title">Profile feature scales</h2>
+              </div>
+              <span class="lesson-duration">About 10 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Inspect the numeric feature distributions and their ranges before
+                K-Means measures distances between songs.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Build a boxplot grid and print the ranges</strong>
+                  </div>
+                  <small>Continue in <code>model.py</code> with the filtered <code>df</code> from Lesson 1.</small>
+                </div>
+                <pre><code># TODO: List the numeric features you may cluster
+numeric_columns = [
+    "popularity", "danceability", "acousticness",
+    "energy", "instrumentalness", "liveness",
+    "loudness", "speechiness", "tempo",
+]
+print(df[numeric_columns].agg(["min", "max", "std"]).T)
+
+plt.figure(figsize=(18, 12))
+for index, column in enumerate(____, start=1):
+    # TODO: Place each boxplot in a 3-column grid
+    plt.subplot(3, 3, ____)
+    sns.boxplot(x=df[____])
+    plt.title(column)
+plt.tight_layout()
+plt.show()</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li>The range table has one row for each feature and columns <code>min</code>, <code>max</code>, and <code>std</code>.</li>
+                  <li>The figure shows nine boxplots, one for each selected feature.</li>
+                  <li>The features use very different scales: <code>popularity</code> is measured in tens, most audio features are between 0 and 1, and <code>tempo</code> is measured in beats per minute.</li>
+                  <li>Several features contain outliers, but you should not remove every unusual song without a clear reason.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Use the loop index to choose each subplot</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="kmeans-lesson-step-1-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="kmeans-lesson-step-1-code"><code>numeric_columns = [
+    "popularity", "danceability", "acousticness",
+    "energy", "instrumentalness", "liveness",
+    "loudness", "speechiness", "tempo",
+]
+
+print(df[numeric_columns].agg(["min", "max", "std"]).T)
+
+plt.figure(figsize=(18, 12))
+for index, column in enumerate(numeric_columns, start=1):
+    plt.subplot(3, 3, index)
+    sns.boxplot(x=df[column])
+    plt.title(column)
+
+plt.tight_layout()
+plt.show()</code></pre>
+                  <p>
+                    K-Means uses distance, so features with wider numeric ranges
+                    can dominate the calculation even when they are not more
+                    important. This evidence will guide the next preparation step.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>Why can differently scaled features distort K-Means?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="kmeans-quiz-1" value="distance" data-correct="true" />
+                    <span>Distance calculations can be dominated by features with the widest numeric ranges.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-1" value="labels" />
+                    <span>K-Means requires a genre label for every numeric feature.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-1" value="rows" />
+                    <span>Features with different scales always create fewer clusters.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Standardize features
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="2"
+            data-status="locked"
+            aria-labelledby="kmeans-step-2-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">02</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="kmeans-step-2-title">Choose and standardize features</h2>
+              </div>
+              <span class="lesson-duration">About 10 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Create a numeric feature matrix without the genre label, then
+                standardize each feature to a mean near 0 and a standard deviation near 1.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Build a comparable feature matrix</strong>
+                  </div>
+                  <small>The genre column stays in <code>df</code> for interpretation, but it does not go into <code>X</code>.</small>
+                </div>
+                <pre><code>from sklearn.preprocessing import StandardScaler
+
+features = [
+    "popularity", "danceability", "acousticness",
+    "loudness", "energy",
+]
+
+# TODO: Select only the clustering features
+X = df[____].copy()
+
+scaler = StandardScaler()
+# TODO: Fit the scaler to X and transform its values
+X_scaled = scaler.____(____)
+
+print("X shape:", X.shape)
+print("Scaled means:", X_scaled.mean(axis=0).round(6))
+print("Scaled deviations:", X_scaled.std(axis=0).round(6))</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li><code>X.shape</code> prints <code>(286, 5)</code>.</li>
+                  <li>The five scaled means are approximately <code>0</code>.</li>
+                  <li>The five scaled standard deviations are approximately <code>1</code>.</li>
+                  <li><code>artist_top_genre</code> is absent from the feature matrix.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Keep labels out of the unsupervised training data</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="kmeans-lesson-step-2-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="kmeans-lesson-step-2-code"><code>from sklearn.preprocessing import StandardScaler
+
+features = [
+    "popularity", "danceability", "acousticness",
+    "loudness", "energy",
+]
+
+X = df[features].copy()
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+print("X shape:", X.shape)
+print("Scaled means:", X_scaled.mean(axis=0).round(6))
+print("Scaled deviations:", X_scaled.std(axis=0).round(6))</code></pre>
+                  <p>
+                    Standardization changes the scale of each column, not the
+                    number of songs. Genre labels can be compared with the
+                    resulting clusters later, but they must not guide this
+                    unsupervised fit.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>Which column should be excluded from the K-Means feature matrix?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="kmeans-quiz-2" value="genre" data-correct="true" />
+                    <span><code>artist_top_genre</code>, because it is a label used for later interpretation.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-2" value="dance" />
+                    <span><code>danceability</code>, because every clustering feature must be a text value.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-2" value="energy" />
+                    <span><code>energy</code>, because K-Means cannot process values between 0 and 1.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Use the elbow method
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="3"
+            data-status="locked"
+            aria-labelledby="kmeans-step-3-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">03</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="kmeans-step-3-title">Use the elbow method</h2>
+              </div>
+              <span class="lesson-duration">About 12 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Fit models with 1 through 10 clusters and compare their within-cluster
+                sum of squares to look for a useful change in the error curve.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Measure WCSS for each cluster count</strong>
+                  </div>
+                  <small>Use the standardized matrix <code>X_scaled</code> in every model.</small>
+                </div>
+                <pre><code>from sklearn.cluster import KMeans
+
+wcss = []
+
+for k in range(1, 11):
+    model = KMeans(
+        n_clusters=____,
+        init="k-means++",
+        n_init=10,
+        random_state=42,
+    )
+    model.fit(____)
+    # TODO: Store the model's within-cluster sum of squares
+    wcss.append(model.____)
+
+print(wcss)
+
+sns.lineplot(x=range(1, 11), y=wcss, marker="o", color="red")
+plt.title("Elbow method")
+plt.xlabel("Number of clusters")
+plt.ylabel("WCSS")
+plt.show()</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li><code>wcss</code> contains 10 numeric values, one for each value of <code>k</code> from 1 to 10.</li>
+                  <li>The values decrease as the number of clusters increases.</li>
+                  <li>The line plot shows where adding more clusters stops producing a large drop.</li>
+                  <li>A bend around a small number of clusters, often three for this exercise, suggests a candidate. Inspect the whole curve rather than assuming the number in advance.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Each fitted model exposes its inertia</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="kmeans-lesson-step-3-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="kmeans-lesson-step-3-code"><code>from sklearn.cluster import KMeans
+
+wcss = []
+
+for k in range(1, 11):
+    model = KMeans(
+        n_clusters=k,
+        init="k-means++",
+        n_init=10,
+        random_state=42,
+    )
+    model.fit(X_scaled)
+    wcss.append(model.inertia_)
+
+print(wcss)
+
+sns.lineplot(x=range(1, 11), y=wcss, marker="o", color="red")
+plt.title("Elbow method")
+plt.xlabel("Number of clusters")
+plt.ylabel("WCSS")
+plt.show()</code></pre>
+                  <p>
+                    WCSS is also called inertia. It measures how far samples are
+                    from their assigned centroids. The elbow is a heuristic, not
+                    an automatic proof of the correct cluster count.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>What does K-Means try to reduce when it fits a model?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="kmeans-quiz-3" value="wcss" data-correct="true" />
+                    <span>The squared distances between samples and their assigned cluster centroids.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-3" value="genre" />
+                    <span>The number of distinct genre names in the original DataFrame.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-3" value="rows" />
+                    <span>The number of songs until each cluster contains exactly one sample.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Fit the model
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="4"
+            data-status="locked"
+            aria-labelledby="kmeans-step-4-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">04</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="kmeans-step-4-title">Fit three clusters and visualize them</h2>
+              </div>
+              <span class="lesson-duration">About 12 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Fit a three-cluster model, assign cluster numbers to songs, and
+                inspect the groups in popularity versus danceability space.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Fit K-Means and create a cluster-aware DataFrame</strong>
+                  </div>
+                  <small>A two-dimensional plot is a projection; it cannot display all five clustering features at once.</small>
+                </div>
+                <pre><code>kmeans = KMeans(
+    n_clusters=3,
+    init="k-means++",
+    n_init=10,
+    random_state=42,
+)
+
+# TODO: Fit the model and return one label per song
+labels = kmeans.____(X_scaled)
+
+df_clustered = df.copy()
+df_clustered["cluster"] = ____
+
+print(df_clustered["cluster"].value_counts().sort_index())
+
+sns.scatterplot(
+    data=df_clustered,
+    x="popularity",
+    y="danceability",
+    # TODO: Color the points by the assigned cluster
+    hue="____",
+    palette="deep",
+)
+plt.title("K-Means clusters by popularity and danceability")
+plt.show()</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li><code>df_clustered</code> still has 286 rows and now has a <code>cluster</code> column.</li>
+                  <li>The cluster labels are integers among <code>0</code>, <code>1</code>, and <code>2</code>, and the printed counts add to 286.</li>
+                  <li>The scatter plot displays three colors.</li>
+                  <li>The colors can overlap in this two-feature view because the model used five standardized features, not only the two axes shown.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Fit and predict can be combined during model fitting</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="kmeans-lesson-step-4-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="kmeans-lesson-step-4-code"><code>kmeans = KMeans(
+    n_clusters=3,
+    init="k-means++",
+    n_init=10,
+    random_state=42,
+)
+
+labels = kmeans.fit_predict(X_scaled)
+
+df_clustered = df.copy()
+df_clustered["cluster"] = labels
+
+print(df_clustered["cluster"].value_counts().sort_index())
+
+sns.scatterplot(
+    data=df_clustered,
+    x="popularity",
+    y="danceability",
+    hue="cluster",
+    palette="deep",
+)
+plt.title("K-Means clusters by popularity and danceability")
+plt.show()</code></pre>
+                  <p>
+                    Cluster numbers are arbitrary identifiers. Renaming cluster
+                    0 as cluster 2 would not change which songs belong together.
+                    The partition matters, not the number itself.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>What does it mean if the same model names a song cluster 1 instead of cluster 0?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="kmeans-quiz-4" value="arbitrary" data-correct="true" />
+                    <span>The number is an arbitrary identifier; the grouping of songs is what matters.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-4" value="worse" />
+                    <span>The model has become less accurate because cluster 0 is the correct label.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-4" value="moved" />
+                    <span>The song was removed from the feature matrix and assigned afterward.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Evaluate the model
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="5"
+            data-status="locked"
+            aria-labelledby="kmeans-step-5-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">05</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="kmeans-step-5-title">Measure separation and profile the groups</h2>
+              </div>
+              <span class="lesson-duration">About 12 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Calculate a silhouette score, restore centroid values to their
+                original units, and compare the clusters with genre labels for interpretation.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Evaluate cluster cohesion and separation</strong>
+                  </div>
+                  <small>Use silhouette on the same scaled features that produced the labels.</small>
+                </div>
+                <pre><code>from sklearn.metrics import silhouette_score
+
+# TODO: Compute the silhouette score for X_scaled and labels
+score = silhouette_score(____, ____)
+print(f"Silhouette score: {score:.3f}")
+
+# TODO: Convert scaled centroids back into the original feature units
+centers = scaler.____(kmeans.cluster_centers_)
+centers_df = pd.DataFrame(centers, columns=features).round(3)
+print(centers_df)
+
+genre_counts = pd.crosstab(
+    df_clustered["cluster"],
+    df_clustered["artist_top_genre"],
+)
+print(genre_counts)</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li>The silhouette score is between <code>-1</code> and <code>1</code>. Values closer to 1 indicate denser, better-separated clusters; values near 0 indicate substantial overlap.</li>
+                  <li><code>centers_df</code> has three rows and the five clustering feature names as columns.</li>
+                  <li>The inverse-transformed centroid values are expressed in their original units.</li>
+                  <li>The cluster-by-genre table shows how songs from different genres are distributed across clusters. Similar rows suggest that the clusters cut across genre labels.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>A meaningful evaluation should not depend on the labels</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="kmeans-lesson-step-5-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="kmeans-lesson-step-5-code"><code>from sklearn.metrics import silhouette_score
+
+score = silhouette_score(X_scaled, labels)
+print(f"Silhouette score: {score:.3f}")
+
+centers = scaler.inverse_transform(kmeans.cluster_centers_)
+centers_df = pd.DataFrame(centers, columns=features).round(3)
+print(centers_df)
+
+genre_counts = pd.crosstab(
+    df_clustered["cluster"],
+    df_clustered["artist_top_genre"],
+)
+print(genre_counts)</code></pre>
+                  <p>
+                    A silhouette score summarizes geometric separation. It does
+                    not prove that the clusters are meaningful to people. The
+                    centroid profile and genre crosstab help you interpret what
+                    the groups represent.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>Why is the genre crosstab interpretation rather than model accuracy?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="kmeans-quiz-5" value="unsupervised" data-correct="true" />
+                    <span>K-Means was trained without genre answers, so there is no single set of correct cluster labels to score against.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-5" value="silhouette" />
+                    <span>Silhouette scores only work when every song has a different genre.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-5" value="center" />
+                    <span>Centroids automatically contain the original genre labels.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Next: Refine the experiment
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            class="lesson-step"
+            data-lesson-step="6"
+            data-status="locked"
+            aria-labelledby="kmeans-step-6-title"
+            hidden
+          >
+            <header class="lesson-step-heading">
+              <span class="lesson-step-number" aria-hidden="true">06</span>
+              <div>
+                <span class="lesson-step-state">Current step</span>
+                <h2 id="kmeans-step-6-title">Refine the clustering experiment</h2>
+              </div>
+              <span class="lesson-duration">About 15 minutes</span>
+            </header>
+
+            <div class="lesson-step-body">
+              <p class="lesson-goal">
+                <strong>What this step does:</strong>
+                Compare cluster counts with a consistent evaluation function and
+                test how changing the feature set changes the result.
+              </p>
+
+              <div class="lesson-template">
+                <div class="lesson-block-heading">
+                  <div>
+                    <span>Try it yourself first</span>
+                    <strong>Evaluate several cluster counts without changing the data</strong>
+                  </div>
+                  <small>Keep the feature set, scaling method, initialization, and random seed consistent.</small>
+                </div>
+                <pre><code>def evaluate_clusters(feature_frame, k):
+    candidate_scaler = StandardScaler()
+    candidate_scaled = candidate_scaler.fit_transform(____)
+
+    candidate_model = KMeans(
+        n_clusters=____,
+        init="k-means++",
+        n_init=10,
+        random_state=42,
+    )
+    candidate_labels = candidate_model.fit_predict(candidate_scaled)
+    candidate_score = silhouette_score(candidate_scaled, candidate_labels)
+    return candidate_score, candidate_model.inertia_
+
+for k in range(2, 7):
+    # TODO: Compare each candidate on the same feature frame
+    score, inertia = evaluate_clusters(____, ____)
+    print(f"k={k}: silhouette={score:.3f}, inertia={inertia:.3f}")
+
+# Challenge: compare a feature set without popularity.
+without_popularity = X.drop(columns=["popularity"])
+for k in range(2, 5):
+    score, inertia = evaluate_clusters(without_popularity, k)
+    print(f"No popularity, k={k}: silhouette={score:.3f}, inertia={inertia:.3f}")</code></pre>
+              </div>
+
+              <div class="lesson-expectation">
+                <strong>Expected result</strong>
+                <ul>
+                  <li>The first loop prints five lines for <code>k = 2</code> through <code>k = 6</code>.</li>
+                  <li>The challenge loop prints three more lines for the reduced feature set.</li>
+                  <li>Every comparison uses standardized data and the same random seed.</li>
+                  <li>You can explain a candidate choice using the elbow curve, silhouette score, cluster sizes, and the meaning of the centroid profiles. The highest score alone is not proof that a solution answers your question.</li>
+                </ul>
+              </div>
+
+              <details class="lesson-hint">
+                <summary>
+                  <span>Show hint · View solution</span>
+                  <small>Pass the data and cluster count into the evaluation function</small>
+                </summary>
+                <div class="lesson-hint-body">
+                  <div class="lesson-code-heading">
+                    <span>Solution</span>
+                    <button type="button" class="lesson-copy-button" data-copy-target="kmeans-lesson-step-6-code">
+                      Copy code
+                    </button>
+                  </div>
+                  <pre id="kmeans-lesson-step-6-code"><code>def evaluate_clusters(feature_frame, k):
+    candidate_scaler = StandardScaler()
+    candidate_scaled = candidate_scaler.fit_transform(feature_frame)
+
+    candidate_model = KMeans(
+        n_clusters=k,
+        init="k-means++",
+        n_init=10,
+        random_state=42,
+    )
+    candidate_labels = candidate_model.fit_predict(candidate_scaled)
+    candidate_score = silhouette_score(candidate_scaled, candidate_labels)
+    return candidate_score, candidate_model.inertia_
+
+for k in range(2, 7):
+    score, inertia = evaluate_clusters(X, k)
+    print(f"k={k}: silhouette={score:.3f}, inertia={inertia:.3f}")
+
+without_popularity = X.drop(columns=["popularity"])
+for k in range(2, 5):
+    score, inertia = evaluate_clusters(without_popularity, k)
+    print(f"No popularity, k={k}: silhouette={score:.3f}, inertia={inertia:.3f}")
+</code></pre>
+                  <p>
+                    A fair comparison changes one decision at a time. If you
+                    change the features, cluster count, scaler, and random seed
+                    together, you cannot tell which change caused the difference.
+                  </p>
+                </div>
+              </details>
+
+              <div class="lesson-actions" data-lesson-actions>
+                <button class="lesson-secondary-button" type="button" data-lesson-action="skip">
+                  Skip step
+                </button>
+                <button class="lesson-primary-button" type="button" data-lesson-action="complete">
+                  Complete step
+                </button>
+              </div>
+
+              <div class="lesson-quiz" data-lesson-quiz hidden>
+                <div class="lesson-quiz-heading">
+                  <span>Knowledge check</span>
+                  <strong>What makes a cluster-count comparison easier to interpret?</strong>
+                </div>
+                <div class="lesson-quiz-options">
+                  <label>
+                    <input type="radio" name="kmeans-quiz-6" value="controlled" data-correct="true" />
+                    <span>Keep the data preparation and model settings consistent while changing only the cluster count.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-6" value="genre" />
+                    <span>Change the genre labels until they match the cluster numbers exactly.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="kmeans-quiz-6" value="highest" />
+                    <span>Always choose the largest possible number of clusters because more groups are more accurate.</span>
+                  </label>
+                </div>
+                <div class="lesson-quiz-footer">
+                  <button type="button" class="lesson-secondary-button" data-lesson-action="check">
+                    Check answer
+                  </button>
+                  <p class="lesson-quiz-feedback" role="status"></p>
+                  <button type="button" class="lesson-primary-button" data-lesson-action="next" hidden>
+                    Complete lesson
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="lesson-finish" data-lesson-finish hidden aria-live="polite">
+            <span class="lesson-finish-mark" data-lesson-finish-mark aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="m6.5 12.5 3.5 3.5 7.5-8" />
+              </svg>
+            </span>
+            <div>
+              <span>K-Means clustering · Lesson complete</span>
+              <h2 data-lesson-finish-title>You built and evaluated an unsupervised clustering model.</h2>
+              <p data-lesson-finish-copy></p>
+              <button
+                class="lesson-primary-button lesson-finish-exam-link"
+                type="button"
+                data-course-exam-jump
+              >
+                Take the final exam
+              </button>
+            </div>
+          </section>
+
+          <section
+            class="course-exam"
+            data-course-exam="classification-kmeans"
+            aria-labelledby="kmeans-final-exam-title"
+            hidden
+          >
+            <header class="course-exam-heading">
+              <span data-course-exam-label>K-Means clustering · Final exam</span>
+              <h2 id="kmeans-final-exam-title" data-course-exam-title></h2>
+              <p data-course-exam-description></p>
+            </header>
+            <div class="course-exam-meta">
+              <span data-course-exam-answered>0 / 6 answered</span>
+              <span data-course-exam-requirement></span>
+              <strong data-course-exam-attempt>Not attempted</strong>
+            </div>
+            <div
+              class="course-exam-questions"
+              data-course-exam-questions
+            ></div>
+            <div class="course-exam-footer">
+              <p data-course-exam-feedback role="status"></p>
+              <div class="course-exam-actions">
+                <button
+                  class="lesson-primary-button"
+                  type="button"
+                  data-exam-action="check"
+                >
+                  Submit final exam
+                </button>
+                <button
+                  class="lesson-secondary-button"
+                  type="button"
+                  data-exam-action="retry"
+                  hidden
+                >
+                  Try again
+                </button>
+              </div>
+            </div>
+          </section>
+        </section>
         </main>
       </div>
 
       <footer class="app-footer">
         <span>ML Generator</span>
-        <span>本地学习环境</span>
+        <span>Local learning environment</span>
       </footer>
     </div>
   </body>

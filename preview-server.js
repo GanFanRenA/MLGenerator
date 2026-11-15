@@ -6,15 +6,16 @@ const {
   getEnvironmentStatus,
 } = require("./environment-manager");
 const { createDirectory, listDirectories } = require("./folder-browser");
+const { chooseProjectFolder } = require("./folder-picker");
 const {
+  createRequirements,
   getLibraryStatus,
-  installLibraries,
 } = require("./library-manager");
 const { detectPython } = require("./python-detector");
 const { getProjectRoot, setProjectRoot } = require("./project-state");
 
 const root = __dirname;
-const port = Number(process.env.PORT || 8765);
+const defaultPort = Number(process.env.PORT || 8765);
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
@@ -31,7 +32,7 @@ function readJsonBody(request) {
       body += chunk;
 
       if (body.length > 16_384) {
-        reject(new Error("请求内容过大。"));
+        reject(new Error("The request body is too large."));
         request.destroy();
       }
     });
@@ -39,15 +40,15 @@ function readJsonBody(request) {
       try {
         resolve(body ? JSON.parse(body) : {});
       } catch {
-        reject(new Error("请求内容不是有效的 JSON。"));
+        reject(new Error("The request body is not valid JSON."));
       }
     });
     request.on("error", reject);
   });
 }
 
-http
-  .createServer((request, response) => {
+function createPreviewServer() {
+  return http.createServer((request, response) => {
     const requestUrl = new URL(request.url, "http://127.0.0.1");
 
     if (requestUrl.pathname === "/api/python") {
@@ -121,6 +122,50 @@ http
       return;
     }
 
+    if (requestUrl.pathname === "/api/project/choose") {
+      if (request.method !== "POST") {
+        response.writeHead(405, { Allow: "POST" });
+        response.end();
+        return;
+      }
+
+      getProjectRoot()
+        .then((projectRoot) => chooseProjectFolder(projectRoot))
+        .then((selectedPath) =>
+          selectedPath
+            ? setProjectRoot(selectedPath).then((projectRoot) => ({
+                selected: true,
+                path: projectRoot,
+              }))
+            : { selected: false },
+        )
+        .then((result) => {
+          response.writeHead(200, {
+            "Cache-Control": "no-store",
+            "Content-Type": "application/json; charset=utf-8",
+          });
+          response.end(JSON.stringify(result));
+        })
+        .catch((error) => {
+          const status =
+            error.code === "FOLDER_PICKER_BUSY"
+              ? 409
+              : error.code === "FOLDER_PICKER_UNSUPPORTED"
+                ? 501
+                : 500;
+          response.writeHead(status, {
+            "Cache-Control": "no-store",
+            "Content-Type": "application/json; charset=utf-8",
+          });
+          response.end(
+            JSON.stringify({
+              message: error.message || "Unable to open the system folder picker.",
+            }),
+          );
+        });
+      return;
+    }
+
     if (requestUrl.pathname === "/api/folders") {
       const operation =
         request.method === "GET"
@@ -156,7 +201,7 @@ http
           });
           response.end(
             JSON.stringify({
-              message: error.message || "无法读取文件夹。",
+              message: error.message || "Unable to read the folder.",
             }),
           );
         });
@@ -194,7 +239,7 @@ http
           response.end(
             JSON.stringify({
               state: "error",
-              message: error.message || "无法创建虚拟环境。",
+              message: error.message || "Unable to create the virtual environment.",
             }),
           );
         });
@@ -226,7 +271,7 @@ http
       return;
     }
 
-    if (requestUrl.pathname === "/api/libraries/install") {
+    if (requestUrl.pathname === "/api/libraries/requirements") {
       if (request.method !== "POST") {
         response.writeHead(405, { Allow: "POST" });
         response.end();
@@ -234,9 +279,9 @@ http
       }
 
       readJsonBody(request)
-        .then((payload) => installLibraries(payload.libraries))
+        .then((payload) => createRequirements(payload.libraries))
         .then((result) => {
-          response.writeHead(200, {
+          response.writeHead(201, {
             "Cache-Control": "no-store",
             "Content-Type": "application/json; charset=utf-8",
           });
@@ -250,7 +295,7 @@ http
           response.end(
             JSON.stringify({
               state: "error",
-              message: error.message || "无法安装 Python 库。",
+              message: error.message || "Unable to generate requirements.txt.",
             }),
           );
         });
@@ -278,7 +323,56 @@ http
       });
       response.end(content);
     });
-  })
-  .listen(port, "127.0.0.1", () => {
-    console.log(`Preview: http://127.0.0.1:${port}`);
   });
+}
+
+function startPreviewServer({ port = defaultPort, host = "127.0.0.1" } = {}) {
+  return new Promise((resolve, reject) => {
+    const server = createPreviewServer();
+
+    function handleStartupError(error) {
+      server.close();
+      reject(error);
+    }
+
+    server.once("error", handleStartupError);
+    server.listen(port, host, () => {
+      server.off("error", handleStartupError);
+      const address = server.address();
+      const actualPort =
+        address && typeof address === "object" ? address.port : port;
+
+      resolve({
+        server,
+        url: `http://${host}:${actualPort}`,
+      });
+    });
+  });
+}
+
+if (require.main === module) {
+  startPreviewServer()
+    .then(({ url }) => {
+      console.log(`Preview: ${url}`);
+    })
+    .catch((error) => {
+      if (error.code === "EADDRINUSE") {
+        console.error(
+          `Port ${defaultPort} is already in use. The local preview service may already be running.`,
+        );
+        console.error(`Open http://127.0.0.1:${defaultPort}`);
+        console.error(
+          "To restart, press Ctrl+C in the terminal running the existing service first.",
+        );
+      } else {
+        console.error(error);
+      }
+
+      process.exitCode = 1;
+    });
+}
+
+module.exports = {
+  createPreviewServer,
+  startPreviewServer,
+};

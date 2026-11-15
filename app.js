@@ -37,6 +37,9 @@ const createVenvButton = document.querySelector("#create-venv-button");
 const createVenvLabel = document.querySelector("#create-venv-label");
 const libraryCard = document.querySelector("#library-card");
 const libraryComplete = document.querySelector("#library-complete");
+const libraryCompleteSummary = document.querySelector(
+  "#library-complete-summary",
+);
 const installedLibraryList = document.querySelector("#installed-library-list");
 const libraryStateLabel = document.querySelector("#library-state-label");
 const libraryTitle = document.querySelector("#library-title");
@@ -49,33 +52,535 @@ const selectAllLibrariesButton = document.querySelector(
 const selectedLibraryCount = document.querySelector(
   "#selected-library-count",
 );
-const installLibrariesButton = document.querySelector(
-  "#install-libraries-button",
+const generateRequirementsButton = document.querySelector(
+  "#generate-requirements-button",
 );
-const installLibrariesLabel = document.querySelector(
-  "#install-libraries-label",
+const generateRequirementsLabel = document.querySelector(
+  "#generate-requirements-label",
+);
+const requirementsComplete = document.querySelector("#requirements-complete");
+const requirementsCompleteSummary = document.querySelector(
+  "#requirements-complete-summary",
+);
+const requirementsCompletePath = document.querySelector(
+  "#requirements-complete-path",
+);
+const requirementsInstallCard = document.querySelector(
+  "#requirements-install-card",
+);
+const requirementsInstallStateLabel = document.querySelector(
+  "#requirements-install-state-label",
+);
+const requirementsInstallTitle = document.querySelector(
+  "#requirements-install-title",
+);
+const requirementsInstallCommand = document.querySelector(
+  "#requirements-install-command",
+);
+const copyRequirementsCommandButton = document.querySelector(
+  "#copy-requirements-command",
+);
+const requirementsStatusList = document.querySelector(
+  "#requirements-status-list",
+);
+const requirementsCheckWorking = document.querySelector(
+  "#requirements-check-working",
+);
+const requirementsInstallFeedback = document.querySelector(
+  "#requirements-install-feedback",
+);
+const requirementsInstallProgress = document.querySelector(
+  "#requirements-install-progress",
+);
+const checkRequirementsButton = document.querySelector(
+  "#check-requirements-button",
+);
+const checkRequirementsLabel = document.querySelector(
+  "#check-requirements-label",
+);
+const repairRequirementsButton = document.querySelector(
+  "#repair-requirements-button",
 );
 const selectFolderButton = document.querySelector("#select-folder-button");
 const selectFolderLabel = document.querySelector("#select-folder-label");
 const topbarFolderName = document.querySelector("#topbar-folder-name");
 const topbarFolderPath = document.querySelector("#topbar-folder-path");
-const folderDialog = document.querySelector("#folder-dialog");
-const closeFolderDialogButton = document.querySelector("#close-folder-dialog");
-const cancelFolderDialogButton = document.querySelector("#cancel-folder-dialog");
-const folderUpButton = document.querySelector("#folder-up-button");
-const showNewFolderButton = document.querySelector("#show-new-folder-button");
-const newFolderForm = document.querySelector("#new-folder-form");
-const newFolderName = document.querySelector("#new-folder-name");
-const createFolderButton = document.querySelector("#create-folder-button");
-const cancelNewFolderButton = document.querySelector(
-  "#cancel-new-folder-button",
-);
-const newFolderError = document.querySelector("#new-folder-error");
-const currentFolderPath = document.querySelector("#current-folder-path");
-const driveList = document.querySelector("#drive-list");
-const folderList = document.querySelector("#folder-list");
-const folderError = document.querySelector("#folder-error");
-const confirmFolderButton = document.querySelector("#confirm-folder-button");
+const courseOptions = [...document.querySelectorAll(".course-option[data-course]")];
+const coursePages = [
+  ...document.querySelectorAll(".course-page[data-course-page]"),
+];
+const lessonCourseConfigs = {
+  "classification-preparing-data": {
+    number: "02",
+    title: "Classification: Prepare Data · ML Generator",
+    allTitle: "You now have a dataset ready for clustering.",
+    allCopy:
+      "You inspected the data structure, cleaned the samples, and examined correlations and distributions. The next lesson can use this dataset to try k-means.",
+    skippedTitle: "The lesson is complete, but some steps were skipped.",
+    skippedCopy: (completed, total, skipped) =>
+      `You completed ${completed}/${total} steps and skipped ${skipped}. Before clustering, review the skipped material to confirm the filtering rules and plot conclusions.`,
+  },
+  "classification-kmeans": {
+    number: "03",
+    title: "Classification: K-Means · ML Generator",
+    allTitle: "You built and evaluated an unsupervised clustering model.",
+    allCopy:
+      "You standardized the music features, used the elbow method to compare cluster counts, fitted K-Means, and interpreted the resulting groups with silhouette and profile analysis.",
+    skippedTitle: "The K-Means lesson is complete, but some steps were skipped.",
+    skippedCopy: (completed, total, skipped) =>
+      `You completed ${completed}/${total} steps and skipped ${skipped}. Review the skipped material before trying to interpret or improve the clusters.`,
+  },
+};
+const courseExamConfigs = {
+  setup: {
+    storageKey: "ml-generator:setup:final-exam:v1",
+    label: "Environment setup · Final exam",
+    title: "Can you run this project reliably?",
+    description:
+      "Six questions cover the Python interpreter, virtual environment, dependency manifest, and installation check.",
+    passScore: 5,
+    questions: [
+      {
+        topic: "Python interpreter",
+        prompt:
+          "Which interpreter should this project use after its virtual environment has been created?",
+        options: [
+          {
+            text: "The python.exe inside the project's .venv folder.",
+            correct: true,
+            explanation:
+              "The project interpreter keeps the course's packages separate from other Python projects.",
+          },
+          {
+            text: "Any system Python identified first on PATH.",
+            explanation:
+              "A system interpreter may not contain the packages installed for this project.",
+          },
+          {
+            text: "The Python version embedded in the browser.",
+            explanation:
+              "Browsers do not provide the project's Python runtime.",
+          },
+        ],
+      },
+      {
+        topic: "Environment isolation",
+        prompt: "What is the main purpose of a virtual environment?",
+        options: [
+          {
+            text: "It isolates this project's Python packages and interpreter settings.",
+            correct: true,
+            explanation:
+              "Isolation prevents package versions in one project from breaking another.",
+          },
+          {
+            text: "It automatically fixes every error in the course code.",
+            explanation:
+              "A virtual environment provides dependencies; it does not debug source code.",
+          },
+          {
+            text: "It permanently removes the system Python installation.",
+            explanation:
+              "The system Python remains available; the project simply uses its isolated environment.",
+          },
+        ],
+      },
+      {
+        topic: "Activation",
+        prompt:
+          "What does the activation command .\\.venv\\Scripts\\Activate.ps1 do in a PowerShell terminal?",
+        options: [
+          {
+            text: "It makes subsequent python and pip commands use the project's .venv.",
+            correct: true,
+            explanation:
+              "Activation changes the current terminal so its Python commands resolve to the project environment.",
+          },
+          {
+            text: "It installs every package in requirements.txt immediately.",
+            explanation:
+              "Activation changes the terminal's environment; installation is a separate pip command.",
+          },
+          {
+            text: "It creates a new CSV dataset for the course.",
+            explanation:
+              "Activation does not create or modify course data.",
+          },
+        ],
+      },
+      {
+        topic: "Dependency manifest",
+        prompt: "What information belongs in requirements.txt?",
+        options: [
+          {
+            text: "The Python packages and versions the project needs.",
+            correct: true,
+            explanation:
+              "The manifest lets another environment recreate the project's dependencies.",
+          },
+          {
+            text: "The source code of model.py.",
+            explanation:
+              "Source code stays in its own Python file; requirements.txt records dependencies.",
+          },
+          {
+            text: "The names of the songs in the training dataset.",
+            explanation:
+              "Dataset contents belong in the data file, not the dependency manifest.",
+          },
+        ],
+      },
+      {
+        topic: "Installation command",
+        prompt:
+          "Which command installs the dependencies listed in requirements.txt?",
+        options: [
+          {
+            text: ".\\.venv\\Scripts\\python.exe -m pip install -r requirements.txt",
+            correct: true,
+            explanation:
+              "The project interpreter runs pip with -r to read the manifest from the project root.",
+          },
+          {
+            text: "python model.py --install requirements.txt",
+            explanation:
+              "Running model.py executes the lesson code; it is not a pip installation command.",
+          },
+          {
+            text: "requirements.txt install",
+            explanation:
+              "requirements.txt is data consumed by pip, not a command-line program.",
+          },
+        ],
+      },
+      {
+        topic: "Verification",
+        prompt:
+          "When should the environment setup course be considered complete?",
+        options: [
+          {
+            text: "After every requirement passes the installation check.",
+            correct: true,
+            explanation:
+              "A generated manifest is not enough; each listed package must be verified as installed.",
+          },
+          {
+            text: "As soon as requirements.txt is generated.",
+            explanation:
+              "Generating the manifest records the plan but does not install or verify the packages.",
+          },
+          {
+            text: "After the Python version is printed once.",
+            explanation:
+              "Detecting Python is only the first setup step; the project environment and packages still need work.",
+          },
+        ],
+      },
+    ],
+  },
+  "classification-preparing-data": {
+    storageKey:
+      "ml-generator:classification-preparing-data:final-exam:v1",
+    label: "Prepare data · Final exam",
+    title: "Can you prepare a dataset for clustering?",
+    description:
+      "Six questions connect loading, quality checks, genre counts, filtering, correlations, and the distribution plots.",
+    passScore: 5,
+    questions: [
+      {
+        topic: "Load and inspect",
+        prompt:
+          "What is the first thing df.head() helps you confirm after reading a CSV?",
+        options: [
+          {
+            text: "That the file loaded and the first rows and columns look as expected.",
+            correct: true,
+            explanation:
+              "A small sample is a quick sanity check before deeper analysis.",
+          },
+          {
+            text: "That every row has already been assigned to a cluster.",
+            explanation:
+              "Loading a DataFrame does not perform clustering.",
+          },
+          {
+            text: "That all numeric features have exactly the same scale.",
+            explanation:
+              "head() shows values, but it does not standardize or compare feature scales.",
+          },
+        ],
+      },
+      {
+        topic: "Data quality",
+        prompt:
+          "Which pandas output most directly counts missing values in every column?",
+        options: [
+          {
+            text: "df.isnull().sum()",
+            correct: true,
+            explanation:
+              "isnull() marks missing cells and sum() counts those marks by column.",
+          },
+          {
+            text: "df.head()",
+            explanation:
+              "head() shows a sample and can miss missing values elsewhere.",
+          },
+          {
+            text: "df.corr()",
+            explanation:
+              "corr() measures relationships among numeric columns.",
+          },
+        ],
+      },
+      {
+        topic: "Category counts",
+        prompt:
+          "Why call value_counts() before drawing the genre bar chart?",
+        options: [
+          {
+            text: "It turns individual songs into a count for each genre.",
+            correct: true,
+            explanation:
+              "The chart needs one aggregate value per category, not one bar per song.",
+          },
+          {
+            text: "It standardizes all numeric audio features.",
+            explanation:
+              "Counting categories does not scale numeric measurements.",
+          },
+          {
+            text: "It removes every song whose popularity is missing.",
+            explanation:
+              "value_counts() counts categories; it is not a missing-value filter.",
+          },
+        ],
+      },
+      {
+        topic: "Filtering",
+        prompt:
+          "When combining pandas conditions with |, why should each condition be wrapped in parentheses?",
+        options: [
+          {
+            text: "To make the intended logical grouping unambiguous.",
+            correct: true,
+            explanation:
+              "Operator precedence can change which rows the combined condition selects.",
+          },
+          {
+            text: "To convert every result into a string column.",
+            explanation:
+              "Parentheses group boolean expressions; they do not change the data type.",
+          },
+          {
+            text: "To automatically fill missing genres.",
+            explanation:
+              "The filters select existing rows; they do not impute category values.",
+          },
+        ],
+      },
+      {
+        topic: "Correlation",
+        prompt: "What does a correlation close to 1 mean?",
+        options: [
+          {
+            text: "The two numeric variables tend to increase together, but it does not prove causation.",
+            correct: true,
+            explanation:
+              "Correlation measures association. A plausible cause requires more evidence.",
+          },
+          {
+            text: "One variable definitely causes the other to increase.",
+            explanation:
+              "Strong correlation alone cannot establish a causal mechanism.",
+          },
+          {
+            text: "Neither variable contains a missing value.",
+            explanation:
+              "Missingness is checked separately from correlation strength.",
+          },
+        ],
+      },
+      {
+        topic: "Cluster shapes",
+        prompt:
+          "What should overlapping genre points in the KDE and scatter plots tell you before K-Means?",
+        options: [
+          {
+            text: "The groups are not cleanly separated in this two-feature view, so the cluster choice needs evidence.",
+            correct: true,
+            explanation:
+              "Overlap is a reason to inspect the full feature space and model quality rather than assume obvious clusters.",
+          },
+          {
+            text: "K-Means will certainly find exactly three perfect clusters.",
+            explanation:
+              "The number and quality of clusters are not guaranteed by genre labels.",
+          },
+          {
+            text: "Any songs that overlap must be deleted from the dataset.",
+            explanation:
+              "Overlap is information about the distribution, not automatically bad data.",
+          },
+        ],
+      },
+    ],
+  },
+  "classification-kmeans": {
+    storageKey: "ml-generator:classification-kmeans:final-exam:v1",
+    label: "K-Means clustering · Final exam",
+    title: "Can you build and interpret a clustering model?",
+    description:
+      "Six questions cover feature preparation, fitting, elbow analysis, evaluation, and controlled experiments.",
+    passScore: 5,
+    questions: [
+      {
+        topic: "Feature scales",
+        prompt:
+          "Why standardize features before fitting K-Means to popularity, tempo, and audio measurements?",
+        options: [
+          {
+            text: "Features with wider numeric ranges could otherwise dominate distance calculations.",
+            correct: true,
+            explanation:
+              "K-Means minimizes distances and WCSS, so scale affects which feature has the most influence.",
+          },
+          {
+            text: "Standardization supplies the genre answer used to train K-Means.",
+            explanation:
+              "K-Means is unsupervised; standardization does not add labels.",
+          },
+          {
+            text: "It guarantees that every song becomes its own cluster.",
+            explanation:
+              "Scaling changes feature units, not the requested number of clusters.",
+          },
+        ],
+      },
+      {
+        topic: "Feature matrix",
+        prompt:
+          "Which column should stay out of the feature matrix X for this unsupervised exercise?",
+        options: [
+          {
+            text: "artist_top_genre, because it is a label used afterward for interpretation.",
+            correct: true,
+            explanation:
+              "Including the genre answer would make the clustering no longer an unsupervised fit.",
+          },
+          {
+            text: "danceability, because K-Means cannot use values between 0 and 1.",
+            explanation:
+              "K-Means can use continuous numeric values, including values between 0 and 1.",
+          },
+          {
+            text: "loudness, because every clustering feature must be text.",
+            explanation:
+              "K-Means requires numeric features rather than text labels.",
+          },
+        ],
+      },
+      {
+        topic: "Elbow method",
+        prompt:
+          "What does the elbow method compare across candidate cluster counts?",
+        options: [
+          {
+            text: "Within-cluster sum of squares (WCSS or inertia), looking for where improvement slows.",
+            correct: true,
+            explanation:
+              "The bend suggests a useful candidate, but it is a heuristic rather than an automatic answer.",
+          },
+          {
+            text: "The alphabetical order of every song title.",
+            explanation:
+              "Song names are not used to choose the number of clusters.",
+          },
+          {
+            text: "The number of missing genres in each row.",
+            explanation:
+              "WCSS measures distances from centroids, not missing category counts.",
+          },
+        ],
+      },
+      {
+        topic: "Fitting",
+        prompt:
+          "What does a two-dimensional plot of popularity and danceability show after fitting on five features?",
+        options: [
+          {
+            text: "A projection that can overlap even when the full five-feature clusters are different.",
+            correct: true,
+            explanation:
+              "The plot reveals only two dimensions of a five-dimensional distance calculation.",
+          },
+          {
+            text: "Every cluster must appear as a completely separated island.",
+            explanation:
+              "Projection can hide the dimensions that separate clusters.",
+          },
+          {
+            text: "Cluster numbers carry a built-in ranking from best to worst.",
+            explanation:
+              "Cluster IDs are arbitrary identifiers, not quality ranks.",
+          },
+        ],
+      },
+      {
+        topic: "Evaluation",
+        prompt:
+          "How should a silhouette score and a cluster-by-genre table be interpreted together?",
+        options: [
+          {
+            text: "Silhouette summarizes geometric separation, while the crosstab helps explain the groups without treating genres as training answers.",
+            correct: true,
+            explanation:
+              "Both provide evidence, but neither alone proves that clusters are meaningful for the question.",
+          },
+          {
+            text: "The crosstab is classification accuracy because every song has an official cluster.",
+            explanation:
+              "There is no ground-truth cluster label for this unsupervised exercise.",
+          },
+          {
+            text: "A silhouette score near 0 proves the clusters are perfectly separated.",
+            explanation:
+              "Scores near 0 indicate substantial overlap; values closer to 1 indicate better separation.",
+          },
+        ],
+      },
+      {
+        topic: "Controlled comparison",
+        prompt:
+          "How should you compare candidate cluster counts fairly?",
+        options: [
+          {
+            text: "Keep features, scaling, initialization, and random seed consistent while varying the main decision.",
+            correct: true,
+            explanation:
+              "Changing several settings at once makes it unclear which change caused the result.",
+          },
+          {
+            text: "Always choose the largest value of k because more clusters are more accurate.",
+            explanation:
+              "More clusters can overfit and fragment meaningful groups; evidence must support the choice.",
+          },
+          {
+            text: "Rename clusters until their numbers match the genre labels.",
+            explanation:
+              "Cluster identifiers are arbitrary; forcing them onto external labels changes the question being evaluated.",
+          },
+        ],
+      },
+    ],
+  },
+};
+const lessonControllers = new Map();
+const courseExamControllers = new Map();
+
+if ("scrollRestoration" in window.history) {
+  window.history.scrollRestoration = "manual";
+}
 
 const views = {
   checking: document.querySelector("#checking-view"),
@@ -87,29 +592,964 @@ const views = {
 let isChecking = false;
 let isSelectingFolder = false;
 let isCreatingEnvironment = false;
-let isInstallingLibraries = false;
+let isGeneratingRequirements = false;
+let isCheckingRequirements = false;
+let isRepairingRequirements = false;
 let selectedProjectPath = null;
-let currentFolderPathValue = null;
-let currentFolderParent = null;
-let folderRequestId = 0;
-let isCreatingFolder = false;
 let libraryCatalog = [];
 let libraryPipAvailable = false;
 const selectedLibraries = new Set();
+let hasInitializedLibrarySelection = false;
+let activeCourseId = "setup";
+let setupHeaderStatus = {
+  state: headerStatus.dataset.state || "checking",
+  text: headerStatusText.textContent || "Checking",
+};
 
 function setState(state) {
   card.dataset.state = state;
-  headerStatus.dataset.state = state;
 
   for (const [viewState, view] of Object.entries(views)) {
     view.hidden = viewState !== state;
   }
 }
 
-function setHeaderStatus(state, text) {
+function applyHeaderStatus(state, text) {
   headerStatus.dataset.state = state;
   headerStatus.setAttribute("aria-label", text);
   headerStatusText.textContent = text;
+}
+
+function setHeaderStatus(state, text) {
+  setupHeaderStatus = { state, text };
+
+  if (activeCourseId === "setup") {
+    applyHeaderStatus(state, text);
+  }
+}
+
+function createCourseExamController(page, config) {
+  const courseId = page.dataset.coursePage;
+  const panel = page.querySelector("[data-course-exam]");
+  if (!panel || !config) {
+    return null;
+  }
+
+  const questionsContainer = panel.querySelector(
+    "[data-course-exam-questions]",
+  );
+  const checkButton = panel.querySelector('[data-exam-action="check"]');
+  const retryButton = panel.querySelector('[data-exam-action="retry"]');
+  const feedback = panel.querySelector("[data-course-exam-feedback]");
+  const attemptLabel = panel.querySelector("[data-course-exam-attempt]");
+  const answeredLabel = panel.querySelector("[data-course-exam-answered]");
+  const jumpButton = page.querySelector("[data-course-exam-jump]");
+  const total = config.questions.length;
+  let savedAttempt = null;
+
+  function readSavedAttempt() {
+    try {
+      const value = JSON.parse(
+        localStorage.getItem(config.storageKey) || "null",
+      );
+      if (
+        value &&
+        Number.isInteger(value.score) &&
+        Number.isInteger(value.total)
+      ) {
+        return value;
+      }
+    } catch {
+      // The exam remains available when local storage cannot be read.
+    }
+    return null;
+  }
+
+  function saveAttempt(attempt) {
+    try {
+      localStorage.setItem(config.storageKey, JSON.stringify(attempt));
+    } catch {
+      // Attempt persistence is optional.
+    }
+  }
+
+  function updateAnsweredCount() {
+    const answered = config.questions.reduce(
+      (count, _, index) =>
+        count +
+        (panel.querySelector(
+          `input[name="${courseId}-final-exam-${index}"]:checked`,
+        )
+          ? 1
+          : 0),
+      0,
+    );
+    answeredLabel.textContent = `${answered} / ${total} answered`;
+  }
+
+  function setAttemptLabel(attempt) {
+    if (!attempt) {
+      attemptLabel.textContent = "Not attempted";
+      attemptLabel.dataset.kind = "";
+      return;
+    }
+
+    const passed = attempt.score >= config.passScore;
+    attemptLabel.textContent = `${passed ? "Passed" : "Not passed"} · ${attempt.score} / ${attempt.total}`;
+    attemptLabel.dataset.kind = passed ? "success" : "error";
+  }
+
+  function renderQuestions() {
+    questionsContainer.replaceChildren();
+
+    config.questions.forEach((question, questionIndex) => {
+      const article = document.createElement("article");
+      article.className = "course-exam-question";
+      article.dataset.examQuestion = String(questionIndex);
+      article.setAttribute(
+        "aria-labelledby",
+        `${courseId}-final-question-${questionIndex}`,
+      );
+
+      const header = document.createElement("header");
+      const topic = document.createElement("span");
+      topic.textContent = `Question ${questionIndex + 1} · ${question.topic}`;
+      const prompt = document.createElement("h3");
+      prompt.id = `${courseId}-final-question-${questionIndex}`;
+      prompt.textContent = question.prompt;
+      header.append(topic, prompt);
+
+      const options = document.createElement("div");
+      options.className = "course-exam-options";
+      question.options.forEach((option, optionIndex) => {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `${courseId}-final-exam-${questionIndex}`;
+        input.value = String(optionIndex);
+        input.dataset.examQuestion = String(questionIndex);
+        const text = document.createElement("span");
+        text.textContent = option.text;
+        label.append(input, text);
+        options.append(label);
+      });
+
+      const explanation = document.createElement("p");
+      explanation.className = "course-exam-explanation";
+      explanation.dataset.examExplanation = "";
+      explanation.hidden = true;
+
+      article.append(header, options, explanation);
+      questionsContainer.append(article);
+    });
+  }
+
+  function resetAnswerReview() {
+    panel.dataset.state = "ready";
+    for (const input of panel.querySelectorAll("input")) {
+      input.disabled = false;
+      input.checked = false;
+    }
+
+    for (const question of panel.querySelectorAll(
+      ".course-exam-question",
+    )) {
+      question.removeAttribute("data-result");
+      question.querySelector("[data-exam-explanation]").hidden = true;
+    }
+
+    checkButton.hidden = false;
+    retryButton.hidden = true;
+    feedback.dataset.kind = "";
+    feedback.textContent = "";
+    updateAnsweredCount();
+  }
+
+  function checkAnswers() {
+    const answers = config.questions.map((_, questionIndex) =>
+      panel.querySelector(
+        `input[name="${courseId}-final-exam-${questionIndex}"]:checked`,
+      ),
+    );
+    const missingIndex = answers.findIndex((answer) => !answer);
+
+    if (missingIndex >= 0) {
+      feedback.dataset.kind = "error";
+      feedback.textContent = `Answer question ${missingIndex + 1} before submitting.`;
+      panel
+        .querySelector(
+          `.course-exam-question[data-exam-question="${missingIndex}"] input`,
+        )
+        ?.focus();
+      return;
+    }
+
+    let score = 0;
+    config.questions.forEach((question, questionIndex) => {
+      const selectedOption = question.options[Number(answers[questionIndex].value)];
+      const isCorrect = Boolean(selectedOption?.correct);
+      if (isCorrect) {
+        score += 1;
+      }
+
+      const card = panel.querySelector(
+        `.course-exam-question[data-exam-question="${questionIndex}"]`,
+      );
+      card.dataset.result = isCorrect ? "correct" : "incorrect";
+      const explanation = card.querySelector("[data-exam-explanation]");
+      explanation.textContent = `${isCorrect ? "Correct." : "Review."} ${selectedOption?.explanation || ""}`;
+      explanation.hidden = false;
+    });
+
+    const passed = score >= config.passScore;
+    panel.dataset.state = passed ? "passed" : "failed";
+    for (const input of panel.querySelectorAll("input")) {
+      input.disabled = true;
+    }
+
+    checkButton.hidden = true;
+    retryButton.hidden = false;
+    feedback.dataset.kind = passed ? "success" : "error";
+    feedback.textContent = passed
+      ? `Passed with ${score} / ${total}. You are ready to continue.`
+      : `You scored ${score} / ${total}. Review the explanations, then try again; ${config.passScore} correct answers are required.`;
+
+    savedAttempt = {
+      score,
+      total,
+      passed,
+      completedAt: new Date().toISOString(),
+    };
+    saveAttempt(savedAttempt);
+    setAttemptLabel(savedAttempt);
+  }
+
+  function initialize() {
+    panel.querySelector("[data-course-exam-label]").textContent = config.label;
+    panel.querySelector("[data-course-exam-title]").textContent = config.title;
+    panel.querySelector("[data-course-exam-description]").textContent =
+      config.description;
+    panel.querySelector("[data-course-exam-requirement]").textContent =
+      `Pass score: ${config.passScore} / ${total}`;
+    renderQuestions();
+    resetAnswerReview();
+
+    savedAttempt = readSavedAttempt();
+    setAttemptLabel(savedAttempt);
+
+    panel.addEventListener("change", (event) => {
+      if (event.target.matches('input[type="radio"]')) {
+        updateAnsweredCount();
+        feedback.dataset.kind = "";
+        feedback.textContent = "";
+      }
+    });
+
+    panel.addEventListener("click", (event) => {
+      const actionButton = event.target.closest("[data-exam-action]");
+      if (!actionButton) {
+        return;
+      }
+
+      if (actionButton.dataset.examAction === "check") {
+        checkAnswers();
+      } else if (actionButton.dataset.examAction === "retry") {
+        resetAnswerReview();
+      }
+    });
+
+    jumpButton?.addEventListener("click", () => {
+      panel.hidden = false;
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  return { initialize };
+}
+
+function initializeCourseExams() {
+  for (const page of coursePages) {
+    const controller = createCourseExamController(
+      page,
+      courseExamConfigs[page.dataset.coursePage],
+    );
+    if (!controller) {
+      continue;
+    }
+
+    courseExamControllers.set(page.dataset.coursePage, controller);
+    controller.initialize();
+  }
+}
+
+function setCourseExamVisible(courseId, isVisible) {
+  const page = coursePages.find(
+    (candidate) => candidate.dataset.coursePage === courseId,
+  );
+  const panel = page?.querySelector("[data-course-exam]");
+  if (panel) {
+    panel.hidden = !isVisible;
+  }
+}
+
+function createLessonController(page, config) {
+  const courseId = page.dataset.coursePage;
+  const lessonSteps = [
+    ...page.querySelectorAll(".lesson-step[data-lesson-step]"),
+  ];
+  const lessonProgressCount = page.querySelector(
+    "[data-lesson-progress-count]",
+  );
+  const lessonProgressBar = page.querySelector("[data-lesson-progress-bar]");
+  const lessonProgressTrack = page.querySelector(".lesson-progress-track");
+  const lessonProgressDetail = page.querySelector(
+    "[data-lesson-progress-detail]",
+  );
+  const lessonHistory = page.querySelector("[data-lesson-history]");
+  const lessonFinish = page.querySelector("[data-lesson-finish]");
+  const lessonFinishMark = page.querySelector("[data-lesson-finish-mark]");
+  const lessonFinishTitle = page.querySelector("[data-lesson-finish-title]");
+  const lessonFinishCopy = page.querySelector("[data-lesson-finish-copy]");
+  const lessonProgressStorageKey = page.dataset.lessonStorageKey;
+  const completedLessonSteps = new Set();
+  const skippedLessonSteps = new Set();
+
+function getLessonStepNumber(step) {
+  return Number(step.dataset.lessonStep);
+}
+
+function getLessonStepName(step) {
+  return step.querySelector(".lesson-step-heading h2")?.textContent || "";
+}
+
+function saveLessonProgress() {
+  try {
+    localStorage.setItem(
+      lessonProgressStorageKey,
+      JSON.stringify({
+        completed: [...completedLessonSteps],
+        skipped: [...skippedLessonSteps],
+      }),
+    );
+  } catch {
+    // Progress persistence is optional; the lesson still works in memory.
+  }
+}
+
+function restoreLessonProgress() {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(lessonProgressStorageKey) || "{}",
+    );
+
+    for (const value of saved.completed || []) {
+      const stepNumber = Number(value);
+      if (
+        Number.isInteger(stepNumber) &&
+        stepNumber >= 1 &&
+        stepNumber <= lessonSteps.length
+      ) {
+        completedLessonSteps.add(stepNumber);
+      }
+    }
+
+    for (const value of saved.skipped || []) {
+      const stepNumber = Number(value);
+      if (
+        Number.isInteger(stepNumber) &&
+        stepNumber >= 1 &&
+        stepNumber <= lessonSteps.length &&
+        !completedLessonSteps.has(stepNumber)
+      ) {
+        skippedLessonSteps.add(stepNumber);
+      }
+    }
+  } catch {
+    completedLessonSteps.clear();
+    skippedLessonSteps.clear();
+  }
+}
+
+function updateClassificationHeader() {
+  if (activeCourseId !== courseId) {
+    return;
+  }
+
+  const completed = completedLessonSteps.size;
+  const skipped = skippedLessonSteps.size;
+  const skippedText = skipped > 0 ? ` · ${skipped} skipped` : "";
+  applyHeaderStatus(
+    "course",
+    `Course ${config.number} · ${completed} / ${lessonSteps.length} steps complete${skippedText}`,
+  );
+}
+
+function renderLessonHistory() {
+  lessonHistory.replaceChildren();
+
+  const entries = [
+    ...[...completedLessonSteps].map((stepNumber) => ({
+      stepNumber,
+      status: "complete",
+    })),
+    ...[...skippedLessonSteps].map((stepNumber) => ({
+      stepNumber,
+      status: "skipped",
+    })),
+  ].sort((a, b) => a.stepNumber - b.stepNumber);
+
+  for (const entry of entries) {
+    const step = lessonSteps.find(
+      (candidate) => getLessonStepNumber(candidate) === entry.stepNumber,
+    );
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = `lesson-history-item is-${entry.status}`;
+    item.dataset.reviewStep = String(entry.stepNumber);
+    item.setAttribute(
+      "aria-label",
+      `Review step ${entry.stepNumber}: ${getLessonStepName(step)}`,
+    );
+
+    if (entry.status === "complete") {
+      const mark = document.createElement("span");
+      mark.className = "lesson-history-mark";
+      mark.setAttribute("aria-hidden", "true");
+      mark.textContent = "✓";
+      item.append(mark);
+    }
+
+    const copy = document.createElement("span");
+    copy.textContent =
+      entry.status === "complete"
+        ? `Step ${entry.stepNumber} · ${getLessonStepName(step)}`
+        : `Step ${entry.stepNumber} · Skipped`;
+    item.append(copy);
+    lessonHistory.append(item);
+  }
+}
+
+function renderLessonProgress() {
+  const completed = completedLessonSteps.size;
+  const skipped = skippedLessonSteps.size;
+  const total = lessonSteps.length;
+  const percentage = total > 0 ? (completed / total) * 100 : 0;
+  const skippedText = skipped > 0 ? `, ${skipped} skipped` : "";
+
+  lessonProgressCount.textContent = `${completed} / ${total} steps complete`;
+  lessonProgressBar.style.width = `${percentage}%`;
+  lessonProgressTrack.setAttribute("aria-valuenow", String(completed));
+  lessonProgressDetail.textContent =
+    skipped > 0
+      ? `${completed} steps completed${skippedText}. Select a step record to review it.`
+      : "Select a completed step record to review it without changing lesson progress.";
+  renderLessonHistory();
+  updateClassificationHeader();
+}
+
+function showLessonFinish() {
+  clearLessonReviewModes();
+
+  for (const step of lessonSteps) {
+    step.hidden = true;
+  }
+
+  const completed = completedLessonSteps.size;
+  const skipped = skippedLessonSteps.size;
+  const allCompleted = completed === lessonSteps.length;
+
+  lessonFinish.hidden = false;
+  lessonFinishMark.hidden = !allCompleted;
+  lessonFinishTitle.textContent = allCompleted
+    ? config.allTitle
+    : config.skippedTitle;
+  lessonFinishCopy.textContent = allCompleted
+    ? config.allCopy
+    : config.skippedCopy(completed, lessonSteps.length, skipped);
+  setCourseExamVisible(courseId, true);
+}
+
+function clearLessonReviewModes() {
+  for (const step of lessonSteps) {
+    step.classList.remove("is-review");
+    step.querySelector("[data-lesson-review-bar]")?.remove();
+    step.querySelectorAll("[data-review-target]").forEach((button) => {
+      button.remove();
+    });
+  }
+}
+
+function createLessonReviewBar(step) {
+  const body = step.querySelector(".lesson-step-body");
+  if (!body) {
+    return;
+  }
+
+  const stepNumber = getLessonStepNumber(step);
+  const bar = document.createElement("div");
+  bar.className = "lesson-review-bar";
+  bar.dataset.lessonReviewBar = "";
+
+  const copy = document.createElement("div");
+  const label = document.createElement("span");
+  label.textContent = "Review mode";
+  const title = document.createElement("strong");
+  title.textContent = `Step ${stepNumber} · ${getLessonStepName(step)}`;
+  const description = document.createElement("small");
+  description.textContent = "Reviewing this content does not change its completed or skipped status.";
+  copy.append(label, title, description);
+
+  const controls = document.createElement("div");
+  controls.className = "lesson-review-controls";
+
+  const previousNumber = stepNumber - 1;
+  if (
+    completedLessonSteps.has(previousNumber) ||
+    skippedLessonSteps.has(previousNumber)
+  ) {
+    const previousButton = document.createElement("button");
+    previousButton.type = "button";
+    previousButton.className = "lesson-secondary-button";
+    previousButton.dataset.reviewTarget = String(previousNumber);
+    previousButton.textContent = "Previous step";
+    controls.append(previousButton);
+  }
+
+  const nextNumber = stepNumber + 1;
+  if (
+    completedLessonSteps.has(nextNumber) ||
+    skippedLessonSteps.has(nextNumber)
+  ) {
+    const nextButton = document.createElement("button");
+    nextButton.type = "button";
+    nextButton.className = "lesson-secondary-button";
+    nextButton.dataset.reviewTarget = String(nextNumber);
+    nextButton.textContent = "Next step";
+    controls.append(nextButton);
+  }
+
+  const returnButton = document.createElement("button");
+  returnButton.type = "button";
+  returnButton.className = "lesson-primary-button";
+  returnButton.dataset.lessonAction = "return-progress";
+  returnButton.textContent = "Return to current progress";
+  controls.append(returnButton);
+
+  bar.append(copy, controls);
+  body.prepend(bar);
+}
+
+function reviewLessonStep(stepNumber) {
+  const step = lessonSteps.find(
+    (candidate) => getLessonStepNumber(candidate) === stepNumber,
+  );
+
+  if (
+    !step ||
+    (!completedLessonSteps.has(stepNumber) &&
+      !skippedLessonSteps.has(stepNumber))
+  ) {
+    return;
+  }
+
+  clearLessonReviewModes();
+
+  for (const candidate of lessonSteps) {
+    candidate.hidden = candidate !== step;
+  }
+
+  const stateLabel = step.querySelector(".lesson-step-state");
+  step.classList.add("is-review");
+  step.dataset.status = "review";
+  step.hidden = false;
+  lessonFinish.hidden = true;
+  setCourseExamVisible(courseId, false);
+
+  if (stateLabel) {
+    stateLabel.textContent = "Reviewing";
+  }
+
+  step.querySelector("[data-lesson-actions]")?.setAttribute("hidden", "");
+  step.querySelector("[data-lesson-quiz]")?.setAttribute("hidden", "");
+  createLessonReviewBar(step);
+  window.requestAnimationFrame(() => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    step.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  });
+}
+
+function returnToCurrentLessonProgress() {
+  clearLessonReviewModes();
+  const currentStep = lessonSteps.find((step) => {
+    const stepNumber = getLessonStepNumber(step);
+    return (
+      !completedLessonSteps.has(stepNumber) &&
+      !skippedLessonSteps.has(stepNumber)
+    );
+  });
+
+  if (currentStep) {
+    showCurrentLessonStep(currentStep);
+  } else {
+    showLessonFinish();
+  }
+}
+
+function showCurrentLessonStep(step) {
+  clearLessonReviewModes();
+
+  for (const candidate of lessonSteps) {
+    candidate.hidden = candidate !== step;
+  }
+
+  step.dataset.status = "current";
+  const stateLabel = step.querySelector(".lesson-step-state");
+  if (stateLabel) {
+    stateLabel.textContent = "Current step";
+  }
+
+  lessonFinish.hidden = true;
+  setCourseExamVisible(courseId, false);
+  window.requestAnimationFrame(() => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    step.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  });
+}
+
+function advanceLessonFrom(step) {
+  const currentNumber = getLessonStepNumber(step);
+  const nextStep = lessonSteps.find(
+    (candidate) => getLessonStepNumber(candidate) === currentNumber + 1,
+  );
+
+  if (nextStep) {
+    showCurrentLessonStep(nextStep);
+    return;
+  }
+
+  showLessonFinish();
+}
+
+function completeLessonStep(step) {
+  const quiz = step.querySelector("[data-lesson-quiz]");
+  const actions = step.querySelector("[data-lesson-actions]");
+  const stateLabel = step.querySelector(".lesson-step-state");
+
+  if (!quiz || !actions || !quiz.hidden) {
+    return;
+  }
+
+  actions.hidden = true;
+  quiz.hidden = false;
+  step.dataset.status = "quiz";
+
+  if (stateLabel) {
+    stateLabel.textContent = "Knowledge check";
+  }
+}
+
+function skipLessonStep(step) {
+  const stepNumber = getLessonStepNumber(step);
+  completedLessonSteps.delete(stepNumber);
+  skippedLessonSteps.add(stepNumber);
+  step.dataset.status = "skipped";
+  saveLessonProgress();
+  renderLessonProgress();
+  advanceLessonFrom(step);
+}
+
+function checkLessonQuiz(step) {
+  const quiz = step.querySelector("[data-lesson-quiz]");
+  const selected = quiz?.querySelector("input:checked");
+  const feedback = quiz?.querySelector(".lesson-quiz-feedback");
+  const checkButton = quiz?.querySelector('[data-lesson-action="check"]');
+  const nextButton = quiz?.querySelector('[data-lesson-action="next"]');
+  const stateLabel = step.querySelector(".lesson-step-state");
+
+  if (!quiz || !feedback || !checkButton || !nextButton) {
+    return;
+  }
+
+  if (!selected) {
+    feedback.dataset.kind = "error";
+    feedback.textContent = "Select an answer before checking.";
+    return;
+  }
+
+  if (selected.dataset.correct !== "true") {
+    feedback.dataset.kind = "error";
+    feedback.textContent = "Not quite. Revisit this step's goal and expected result, then compare the options again.";
+    return;
+  }
+
+  const stepNumber = getLessonStepNumber(step);
+  skippedLessonSteps.delete(stepNumber);
+  completedLessonSteps.add(stepNumber);
+  step.dataset.status = "completed";
+
+  for (const input of quiz.querySelectorAll("input")) {
+    input.disabled = true;
+  }
+
+  checkButton.hidden = true;
+  nextButton.hidden = false;
+  feedback.dataset.kind = "success";
+  feedback.textContent = "Correct. You have achieved this step's goal.";
+
+  if (stateLabel) {
+    stateLabel.textContent = "Completed";
+  }
+
+  saveLessonProgress();
+  renderLessonProgress();
+}
+
+function initializeLessonProgress() {
+  restoreLessonProgress();
+
+  let currentStep = null;
+  for (const step of lessonSteps) {
+    const stepNumber = getLessonStepNumber(step);
+    const isProcessed =
+      completedLessonSteps.has(stepNumber) ||
+      skippedLessonSteps.has(stepNumber);
+
+    step.hidden = isProcessed || Boolean(currentStep);
+    step.dataset.status = isProcessed
+      ? completedLessonSteps.has(stepNumber)
+        ? "completed"
+        : "skipped"
+      : "locked";
+
+    if (!isProcessed && !currentStep) {
+      currentStep = step;
+      step.dataset.status = "current";
+    }
+  }
+
+  renderLessonProgress();
+
+  if (currentStep) {
+    currentStep.hidden = false;
+    lessonFinish.hidden = true;
+  } else {
+    showLessonFinish();
+  }
+}
+
+function initializeCourseLessonInteractions() {
+  initializeLessonProgress();
+
+  lessonHistory.addEventListener("click", (event) => {
+    const reviewButton = event.target.closest("[data-review-step]");
+    if (reviewButton) {
+      reviewLessonStep(Number(reviewButton.dataset.reviewStep));
+    }
+  });
+
+  for (const step of lessonSteps) {
+    const stepNumber = getLessonStepNumber(step);
+    const actions = step.querySelector("[data-lesson-actions]");
+    if (actions) {
+      const previousButton = document.createElement("button");
+      previousButton.type = "button";
+      previousButton.className = "lesson-secondary-button lesson-back-button";
+      previousButton.dataset.lessonAction = "previous";
+      previousButton.textContent = "View previous step";
+      previousButton.hidden = stepNumber === 1;
+      actions.prepend(previousButton);
+    }
+
+    step.addEventListener("click", (event) => {
+      const reviewTarget = event.target.closest("[data-review-target]");
+      const actionButton = event.target.closest("[data-lesson-action]");
+      const copyButton = event.target.closest("[data-copy-target]");
+
+      if (reviewTarget) {
+        reviewLessonStep(Number(reviewTarget.dataset.reviewTarget));
+        return;
+      }
+
+      if (copyButton) {
+        copyLessonCode(copyButton);
+        return;
+      }
+
+      if (!actionButton) {
+        return;
+      }
+
+      const action = actionButton.dataset.lessonAction;
+
+      if (
+        step.classList.contains("is-review") &&
+        action !== "return-progress"
+      ) {
+        return;
+      }
+
+      if (action === "complete") {
+        completeLessonStep(step);
+      } else if (action === "skip") {
+        skipLessonStep(step);
+      } else if (action === "check") {
+        checkLessonQuiz(step);
+      } else if (action === "next") {
+        advanceLessonFrom(step);
+      } else if (action === "previous") {
+        reviewLessonStep(stepNumber - 1);
+      } else if (action === "return-progress") {
+        returnToCurrentLessonProgress();
+      }
+    });
+  }
+}
+
+  return {
+    page,
+    initialize: initializeCourseLessonInteractions,
+    updateHeader: updateClassificationHeader,
+  };
+}
+
+function getCourseFromLocation() {
+  return window.location.hash.replace(/^#course-/, "");
+}
+
+function activateCourse(courseId) {
+  const validCourseId = coursePages.some(
+    (page) => page.dataset.coursePage === courseId,
+  )
+    ? courseId
+    : "setup";
+
+  activeCourseId = validCourseId;
+
+  for (const option of courseOptions) {
+    const isActive = option.dataset.course === validCourseId;
+    option.classList.toggle("is-active", isActive);
+
+    if (isActive) {
+      option.setAttribute("aria-current", "page");
+    } else {
+      option.removeAttribute("aria-current");
+    }
+
+    const detail = option.querySelector(".course-option-copy small");
+    if (detail) {
+      detail.dataset.defaultLabel ||= detail.textContent;
+      detail.textContent = isActive
+        ? "Current course"
+        : detail.dataset.defaultLabel;
+    }
+  }
+
+  for (const page of coursePages) {
+    page.hidden = page.dataset.coursePage !== validCourseId;
+  }
+
+  const lessonController = lessonControllers.get(validCourseId);
+  if (lessonController) {
+    lessonController.updateHeader();
+    document.title = lessonCourseConfigs[validCourseId].title;
+  } else {
+    applyHeaderStatus(setupHeaderStatus.state, setupHeaderStatus.text);
+    document.title = "ML Generator · Project Setup";
+  }
+
+  window.scrollTo({ top: 0, behavior: "auto" });
+  window.requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  });
+}
+
+function navigateToCourse(courseId) {
+  const nextHash = `#course-${courseId}`;
+  if (window.location.hash !== nextHash) {
+    window.history.pushState(null, "", nextHash);
+  }
+  activateCourse(courseId);
+}
+
+function initializeCourseNavigation() {
+  for (const option of courseOptions) {
+    option.addEventListener("click", (event) => {
+      event.preventDefault();
+      navigateToCourse(option.dataset.course);
+    });
+  }
+
+  window.addEventListener("hashchange", () => {
+    activateCourse(getCourseFromLocation());
+  });
+  window.addEventListener("popstate", () => {
+    activateCourse(getCourseFromLocation());
+  });
+
+  activateCourse(getCourseFromLocation());
+}
+
+async function copyLessonCode(button) {
+  const targetId = button.dataset.copyTarget;
+  const target = targetId ? document.getElementById(targetId) : null;
+
+  if (!target) {
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(target.textContent.trim());
+    button.textContent = "Copied";
+  } catch {
+    button.textContent = "Copy failed";
+  }
+
+  window.setTimeout(() => {
+    button.textContent = "Copy code";
+  }, 1600);
+}
+
+function initializeAllLessonInteractions() {
+  for (const page of coursePages) {
+    const config = lessonCourseConfigs[page.dataset.coursePage];
+    if (!config) {
+      continue;
+    }
+
+    const controller = createLessonController(page, config);
+    lessonControllers.set(page.dataset.coursePage, controller);
+    controller.initialize();
+  }
+}
+
+function initializeSetupExamVisibility() {
+  const setupPage = coursePages.find(
+    (page) => page.dataset.coursePage === "setup",
+  );
+  const panel = setupPage?.querySelector("[data-course-exam]");
+  if (!panel) {
+    return;
+  }
+
+  const syncVisibility = () => {
+    panel.hidden = libraryComplete.hidden;
+  };
+
+  new MutationObserver(syncVisibility).observe(libraryComplete, {
+    attributes: true,
+    attributeFilter: ["hidden"],
+  });
+  syncVisibility();
 }
 
 function setCheckingState() {
@@ -118,18 +1558,20 @@ function setCheckingState() {
   venvCard.hidden = true;
   venvComplete.hidden = true;
   libraryCard.hidden = true;
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
   libraryComplete.hidden = true;
   setState("checking");
-  setHeaderStatus("checking", "正在检测");
-  pageTitle.textContent = "先确认你的 Python 环境。";
+  setHeaderStatus("checking", "Checking");
+  pageTitle.textContent = "Confirm your Python environment first.";
   introDescription.textContent =
-    "我们会检查电脑是否已经安装 Python，并显示当前版本。";
-  stateLabel.textContent = "正在检测";
-  stateTitle.textContent = "正在检查 Python...";
+    "We will check whether Python is installed on this computer and show its version.";
+  stateLabel.textContent = "Checking";
+  stateTitle.textContent = "Checking Python...";
   stateDescription.textContent =
-    "请稍候，我们正在查找电脑上可用的 Python。";
+    "Please wait while we look for an available Python installation.";
   redetectButton.disabled = true;
-  redetectLabel.textContent = "检测中";
+  redetectLabel.textContent = "Checking";
   checkedTime.textContent = "";
 }
 
@@ -137,27 +1579,27 @@ function renderFound(result) {
   const python = result.python;
 
   setState("found");
-  setHeaderStatus("found", "环境已就绪");
-  pageTitle.textContent = "Python 环境已经准备好。";
+  setHeaderStatus("found", "Environment ready");
+  pageTitle.textContent = "Your Python environment is ready.";
   introDescription.textContent =
-    "可以从顶栏选择项目文件夹，后续内容都会保存在这个目录中。";
-  stateLabel.textContent = "已完成";
-  stateTitle.textContent = "Python 环境已就绪";
+    "Choose a project folder in the top bar. Your course files will be saved in that directory.";
+  stateLabel.textContent = "Completed";
+  stateTitle.textContent = "Python environment ready";
   stateDescription.textContent =
-    "已找到可用的 Python，接下来可以使用它创建学习环境。";
+    "A usable Python installation was found. You can now use it to create a learning environment.";
 
   document.querySelector("#python-version").textContent = python.version;
   document.querySelector("#python-implementation").textContent =
     python.implementation;
   document.querySelector("#python-architecture").textContent =
-    python.architecture || "未知架构";
+    python.architecture || "Unknown architecture";
   document.querySelector("#python-path").textContent = python.executable;
   document.querySelector("#python-command").textContent = python.detectedBy;
 
   document.querySelector("#complete-version").textContent =
     `Python ${python.version}`;
   document.querySelector("#complete-architecture").textContent =
-    python.architecture || "未知架构";
+    python.architecture || "Unknown architecture";
   document.querySelector("#complete-python-path").textContent =
     python.executable;
   document.querySelector("#complete-python-command").textContent =
@@ -176,16 +1618,18 @@ function renderMissing() {
   venvCard.hidden = true;
   venvComplete.hidden = true;
   libraryCard.hidden = true;
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
   libraryComplete.hidden = true;
   setState("missing");
-  setHeaderStatus("missing", "未找到 Python");
-  pageTitle.textContent = "先确认你的 Python 环境。";
+  setHeaderStatus("missing", "Python not found");
+  pageTitle.textContent = "Confirm your Python environment first.";
   introDescription.textContent =
-    "我们会检查电脑是否已经安装 Python，并显示当前版本。";
-  stateLabel.textContent = "需要处理";
-  stateTitle.textContent = "未检测到 Python";
+    "We will check whether Python is installed on this computer and show its version.";
+  stateLabel.textContent = "Action needed";
+  stateTitle.textContent = "Python was not detected";
   stateDescription.textContent =
-    "这台电脑上还没有可用的 Python。按照下面的步骤安装后，再重新检测。";
+    "No usable Python installation was found on this computer. Follow the steps below, then check again.";
 }
 
 function renderError(message) {
@@ -194,23 +1638,25 @@ function renderError(message) {
   venvCard.hidden = true;
   venvComplete.hidden = true;
   libraryCard.hidden = true;
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
   libraryComplete.hidden = true;
   setState("error");
-  setHeaderStatus("error", "检测失败");
-  pageTitle.textContent = "先确认你的 Python 环境。";
+  setHeaderStatus("error", "Check failed");
+  pageTitle.textContent = "Confirm your Python environment first.";
   introDescription.textContent =
-    "我们会检查电脑是否已经安装 Python，并显示当前版本。";
-  stateLabel.textContent = "检测出错";
-  stateTitle.textContent = "暂时无法完成检测";
+    "We will check whether Python is installed on this computer and show its version.";
+  stateLabel.textContent = "Check error";
+  stateTitle.textContent = "Unable to complete the check";
   stateDescription.textContent =
-    "本地检测服务没有正常返回结果，请检查运行状态后重试。";
+    "The local detection service did not return a valid result. Check that the app is running, then try again.";
   document.querySelector("#error-message").textContent =
-    message || "请稍后点击“重新检测”。";
+    message || "Select “Check again” to retry.";
 }
 
 function renderCheckedTime(checkedAt) {
   const date = checkedAt ? new Date(checkedAt) : new Date();
-  checkedTime.textContent = `检测时间 ${new Intl.DateTimeFormat("zh-CN", {
+  checkedTime.textContent = `Checked at ${new Intl.DateTimeFormat("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
@@ -226,8 +1672,8 @@ function renderProjectSelection(directory) {
   selectedProjectPath = directory;
   topbarFolderName.textContent = getFolderName(directory);
   topbarFolderPath.textContent = directory;
-  selectFolderButton.title = `当前项目：${directory}。点击更换文件夹。`;
-  selectFolderLabel.textContent = "更换";
+  selectFolderButton.title = `Current project: ${directory}. Select to change folders.`;
+  selectFolderLabel.textContent = "Change";
   venvProjectPath.textContent = directory;
 
   if (!venvCard.hidden) {
@@ -237,11 +1683,11 @@ function renderProjectSelection(directory) {
 
 function renderProjectIdle() {
   selectedProjectPath = null;
-  topbarFolderName.textContent = "选择项目文件夹";
-  topbarFolderPath.textContent = "点击选择一个项目根目录";
-  selectFolderButton.title = "选择项目根文件夹";
-  selectFolderLabel.textContent = "选择";
-  venvProjectPath.textContent = "尚未选择";
+  topbarFolderName.textContent = "Select project folder";
+  topbarFolderPath.textContent = "Choose a project root directory";
+  selectFolderButton.title = "Select project root folder";
+  selectFolderLabel.textContent = "Select";
+  venvProjectPath.textContent = "Not selected";
 
   if (!venvCard.hidden) {
     refreshEnvironmentStatus().catch(showEnvironmentError);
@@ -264,17 +1710,17 @@ function updateEnvironmentIntro(state) {
   }
 
   if (state === "no-project") {
-    pageTitle.textContent = "先选择一个项目文件夹。";
+    pageTitle.textContent = "Choose a project folder first.";
     introDescription.textContent =
-      "从顶栏选择项目文件夹后，就可以创建独立的 Python 虚拟环境。";
+      "After you choose a project folder in the top bar, you can create an isolated Python virtual environment.";
   } else if (state === "ready") {
-    pageTitle.textContent = "选择需要的 Python 库。";
+    pageTitle.textContent = "Generate the project dependency manifest first.";
     introDescription.textContent =
-      "项目虚拟环境已就绪。勾选课程中会用到的库，软件会把它们安装到项目中。";
+      "requirements.txt records the packages required by the course. Follow the instructions to install and check them.";
   } else {
-    pageTitle.textContent = "创建项目虚拟环境。";
+    pageTitle.textContent = "Create a project virtual environment.";
     introDescription.textContent =
-      "在项目文件夹中创建并激活独立的 .venv，不会影响全局 Python。";
+      "Create and activate an isolated .venv in the project folder without changing the global Python installation.";
   }
 }
 
@@ -282,34 +1728,36 @@ function renderEnvironmentReady(result) {
   const environment = result.environment || result;
 
   venvCard.dataset.state = "ready";
-  venvStateLabel.textContent = "已完成";
-  venvTitle.textContent = "虚拟环境已激活";
+  venvStateLabel.textContent = "Completed";
+  venvTitle.textContent = "Virtual environment activated";
   venvDescription.textContent =
-    "项目已经拥有独立的 Python 环境，可以继续安装学习依赖。";
+    "The project now has an isolated Python environment. You can continue installing course dependencies.";
   venvProjectPath.textContent = result.projectRoot || selectedProjectPath || "--";
   venvPath.textContent = environment.venvPath || "--";
   venvPython.textContent = environment.pythonPath || "--";
   activationLabel.textContent = `${
-    environment.activationShell || "终端"
-  }命令行激活`;
+    environment.activationShell || "Terminal"
+  } activation command`;
   activationCommandValue.textContent =
     environment.activationCommand || "--";
   venvFeedback.textContent = "";
-  venvHint.textContent = "后续 Python 操作将使用这个项目环境";
-  setEnvironmentButton(false, "已激活");
+  venvHint.textContent = "Future Python commands will use this project environment";
+  setEnvironmentButton(false, "Activated");
   setEnvironmentVisibility({ ready: true });
   venvCard.hidden = true;
   venvComplete.hidden = false;
   venvComplete.open = false;
   venvCompleteSummary.textContent = `Python ${
     environment.version || "--"
-  } · 已激活`;
+  } · Activated`;
   venvCompletePath.textContent = environment.venvPath || "--";
   venvCompletePython.textContent = environment.pythonPath || "--";
   venvCompleteActivation.textContent =
     environment.activationCommand || "--";
   updateEnvironmentIntro("ready");
-  libraryCard.hidden = false;
+  libraryCard.hidden = true;
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
   libraryComplete.hidden = true;
   loadLibraryStatus().catch(showLibraryError);
 }
@@ -318,45 +1766,49 @@ function renderEnvironmentMissing(result) {
   const isExisting = result.state === "existing";
 
   venvCard.dataset.state = result.state || "missing";
-  venvStateLabel.textContent = "正在做";
+  venvStateLabel.textContent = "In progress";
   venvTitle.textContent = isExisting
-    ? "激活现有虚拟环境"
-    : "创建虚拟环境";
+    ? "Activate existing virtual environment"
+    : "Create virtual environment";
   venvDescription.textContent = isExisting
-    ? "项目中已经存在 .venv。验证后可以将其设为当前学习环境。"
-    : "应用会创建 .venv，并使用项目内的 Python 执行后续课程代码。";
+    ? "This project already contains .venv. After validation, you can use it as the current learning environment."
+    : "The app will create .venv and use the project's Python installation for future course code.";
   venvProjectPath.textContent = result.projectRoot || selectedProjectPath || "--";
   venvFeedback.textContent = "";
   venvHint.textContent = isExisting
-    ? "检测到可用的现有环境"
-    : "不会修改电脑上的全局 Python";
+    ? "An existing usable environment was detected"
+    : "The global Python installation will not be changed";
   setEnvironmentButton(
     Boolean(result.projectRoot),
-    isExisting ? "激活现有环境" : "创建并激活",
+    isExisting ? "Activate existing environment" : "Create and activate",
   );
   setEnvironmentVisibility({});
   updateEnvironmentIntro(result.state || "missing");
   venvCard.hidden = false;
   venvComplete.hidden = true;
   libraryCard.hidden = true;
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
   libraryComplete.hidden = true;
 }
 
 function renderEnvironmentNoProject(result) {
   venvCard.dataset.state = "no-project";
-  venvStateLabel.textContent = "等待";
-  venvTitle.textContent = "创建虚拟环境";
+  venvStateLabel.textContent = "Waiting";
+  venvTitle.textContent = "Create virtual environment";
   venvDescription.textContent =
-    "请在顶栏选择项目文件夹，我们会在这里创建独立的 Python 环境。";
-  venvProjectPath.textContent = "尚未选择";
+    "Select a project folder in the top bar. We will create an isolated Python environment here.";
+  venvProjectPath.textContent = "Not selected";
   venvFeedback.textContent = "";
-  venvHint.textContent = "先在顶栏选择项目文件夹";
-  setEnvironmentButton(false, "选择文件夹后创建");
+  venvHint.textContent = "Select a project folder in the top bar first";
+  setEnvironmentButton(false, "Select a folder to begin");
   setEnvironmentVisibility({});
   updateEnvironmentIntro("no-project");
   venvCard.hidden = false;
   venvComplete.hidden = true;
   libraryCard.hidden = true;
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
   libraryComplete.hidden = true;
 }
 
@@ -366,20 +1818,22 @@ function showEnvironmentError(error) {
   }
 
   venvCard.dataset.state = "error";
-  venvStateLabel.textContent = "需要处理";
-  venvTitle.textContent = "虚拟环境创建失败";
+  venvStateLabel.textContent = "Action needed";
+  venvTitle.textContent = "Virtual environment creation failed";
   venvDescription.textContent =
-    "没有完成环境创建。请根据错误信息处理后重试。";
+    "The environment was not created. Resolve the error below, then try again.";
   venvFeedback.textContent =
-    error.message || "无法读取虚拟环境状态，请稍后重试。";
+    error.message || "Unable to read the virtual environment status. Please try again.";
   setEnvironmentButton(
     Boolean(selectedProjectPath) && !isCreatingEnvironment,
-    selectedProjectPath ? "重试创建" : "选择文件夹后创建",
+    selectedProjectPath ? "Retry creation" : "Select a folder to begin",
   );
   setEnvironmentVisibility({});
   venvCard.hidden = false;
   venvComplete.hidden = true;
   libraryCard.hidden = true;
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
   libraryComplete.hidden = true;
 }
 
@@ -395,7 +1849,7 @@ async function refreshEnvironmentStatus() {
   const result = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(result.message || "无法读取虚拟环境状态。");
+    throw new Error(result.message || "Unable to read the virtual environment status.");
   }
 
   if (result.state === "ready") {
@@ -414,17 +1868,19 @@ async function createEnvironment() {
 
   isCreatingEnvironment = true;
   venvCard.dataset.state = "creating";
-  venvStateLabel.textContent = "正在做";
-  venvTitle.textContent = "正在创建虚拟环境";
+  venvStateLabel.textContent = "In progress";
+  venvTitle.textContent = "Creating virtual environment";
   venvDescription.textContent =
-    "正在创建 .venv 并验证其中的 Python，首次执行可能需要一些时间。";
+    "Creating .venv and validating its Python installation. The first run may take a moment.";
   venvFeedback.textContent = "";
-  venvHint.textContent = "请保持软件运行";
-  setEnvironmentButton(false, "正在创建...");
+  venvHint.textContent = "Keep the app running";
+  setEnvironmentButton(false, "Creating...");
   setEnvironmentVisibility({ working: true });
   venvCard.hidden = false;
   venvComplete.hidden = true;
   libraryCard.hidden = true;
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
   libraryComplete.hidden = true;
   selectFolderButton.disabled = true;
 
@@ -436,7 +1892,7 @@ async function createEnvironment() {
     const result = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      throw new Error(result.message || "创建虚拟环境失败。");
+      throw new Error(result.message || "Virtual environment creation failed.");
     }
 
     renderEnvironmentReady(result);
@@ -448,35 +1904,45 @@ async function createEnvironment() {
   }
 }
 
-function getInstallableLibraries() {
-  return libraryCatalog.filter((library) => !library.installed);
-}
-
 function updateLibraryControls() {
-  const installableLibraries = getInstallableLibraries();
-  const selectedCount = installableLibraries.filter((library) =>
+  const selectedCount = libraryCatalog.filter((library) =>
     selectedLibraries.has(library.id),
   ).length;
   const allSelected =
-    installableLibraries.length > 0 &&
-    selectedCount === installableLibraries.length;
+    libraryCatalog.length > 0 &&
+    selectedCount === libraryCatalog.length;
 
   selectedLibraryCount.textContent =
-    selectedCount > 0 ? `已选择 ${selectedCount} 个` : "尚未选择";
-  selectAllLibrariesButton.textContent = allSelected ? "清除" : "全选";
+    selectedCount > 0 ? `${selectedCount} selected` : "Nothing selected";
+  selectAllLibrariesButton.textContent = allSelected ? "Clear" : "Select all";
   selectAllLibrariesButton.disabled =
-    isInstallingLibraries || installableLibraries.length === 0;
-  installLibrariesButton.disabled =
-    isInstallingLibraries ||
-    selectedCount === 0 ||
-    !libraryPipAvailable;
-  installLibrariesLabel.textContent =
-    selectedCount > 0 ? `安装选中库 (${selectedCount})` : "安装选中库";
+    isGeneratingRequirements || libraryCatalog.length === 0;
+  generateRequirementsButton.disabled =
+    isGeneratingRequirements || selectedCount === 0;
+  generateRequirementsLabel.textContent =
+    selectedCount > 0
+      ? `Generate requirements.txt (${selectedCount})`
+      : "Generate requirements.txt";
 }
 
 function renderLibraryList(libraries) {
   libraryCatalog = libraries;
   libraryList.replaceChildren();
+
+  if (!hasInitializedLibrarySelection && selectedLibraries.size === 0) {
+    for (const library of libraries) {
+      selectedLibraries.add(library.id);
+    }
+    hasInitializedLibrarySelection = true;
+  }
+
+  const knownIds = new Set(libraries.map((library) => library.id));
+
+  for (const libraryId of selectedLibraries) {
+    if (!knownIds.has(libraryId)) {
+      selectedLibraries.delete(libraryId);
+    }
+  }
 
   for (const library of libraries) {
     const option = document.createElement("label");
@@ -487,10 +1953,12 @@ function renderLibraryList(libraries) {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.value = library.id;
-    checkbox.checked = library.installed || selectedLibraries.has(library.id);
-    checkbox.disabled = library.installed || isInstallingLibraries;
-    checkbox.setAttribute("aria-label", `选择 ${library.displayName}`);
+    checkbox.checked = selectedLibraries.has(library.id);
+    checkbox.disabled = isGeneratingRequirements;
+    checkbox.setAttribute("aria-label", `Select ${library.displayName}`);
     checkbox.addEventListener("change", () => {
+      hasInitializedLibrarySelection = true;
+
       if (checkbox.checked) {
         selectedLibraries.add(library.id);
       } else {
@@ -519,7 +1987,7 @@ function renderLibraryList(libraries) {
     status.className = "library-status";
     status.textContent = library.installed
       ? `v${library.version}`
-      : "未安装";
+      : "Not installed";
 
     option.append(checkbox, copy, status);
     libraryList.append(option);
@@ -537,7 +2005,7 @@ function renderLibraryComplete(libraries) {
     item.textContent = library.displayName;
 
     const version = document.createElement("span");
-    version.textContent = library.version ? `v${library.version}` : "已安装";
+    version.textContent = library.version ? `v${library.version}` : "Installed";
     item.append(version);
     installedLibraryList.append(item);
   }
@@ -545,34 +2013,165 @@ function renderLibraryComplete(libraries) {
   libraryComplete.open = false;
 }
 
-function showLibraryError(error) {
-  if (libraryCard.hidden) {
+function renderRequirementsComplete(requirements) {
+  requirementsCompleteSummary.textContent =
+    `${requirements.requirements.length} dependencies written to the manifest`;
+  requirementsCompletePath.textContent = `${requirements.path} (project root)`;
+  requirementsComplete.open = false;
+}
+
+function getRequirementStatusText(requirement) {
+  if (requirement.installed) {
+    return requirement.reason
+      ? "Version mismatch"
+      : requirement.version
+        ? `v${requirement.version}`
+        : "Installed";
+  }
+
+  if (requirement.reason === "VERSION_MISMATCH") {
+    return `v${requirement.version} · Version mismatch`;
+  }
+
+  if (requirement.reason === "INVALID_OR_UNCHECKABLE") {
+    return "Unable to verify";
+  }
+
+  return "Not installed";
+}
+
+function renderRequirementStatus(requirements, pipAvailable) {
+  const items = requirements.requirements;
+  const installedCount = items.filter((item) => item.installed).length;
+  const remainingCount = items.length - installedCount;
+
+  requirementsStatusList.replaceChildren();
+
+  for (const requirement of items) {
+    const item = document.createElement("div");
+    item.className = "requirements-status-item";
+    item.classList.toggle("is-installed", requirement.installed);
+
+    const copy = document.createElement("span");
+    copy.className = "requirements-status-copy";
+    const name = document.createElement("strong");
+    name.textContent = requirement.packageName;
+    const raw = document.createElement("code");
+    raw.textContent = requirement.requirement;
+    copy.append(name, raw);
+
+    const status = document.createElement("span");
+    status.className = "requirements-status-value";
+    status.textContent = getRequirementStatusText(requirement);
+
+    item.append(copy, status);
+    requirementsStatusList.append(item);
+  }
+
+  requirementsInstallProgress.textContent =
+    `${installedCount}/${items.length} requirements satisfied`;
+  requirementsInstallFeedback.dataset.kind =
+    requirements.allInstalled ? "success" : "";
+
+  if (items.length === 0) {
+    requirementsInstallFeedback.textContent =
+      "requirements.txt has no dependencies to check. Regenerate the manifest.";
+  } else if (requirements.allInstalled) {
+    requirementsInstallFeedback.textContent =
+      "All dependencies in requirements.txt are installed.";
+  } else {
+    requirementsInstallFeedback.textContent =
+      `${remainingCount} requirements are still unsatisfied. Finish the installation in your terminal, then select “Check installation.”`;
+  }
+
+  if (!pipAvailable) {
+    requirementsInstallFeedback.dataset.kind = "error";
+    requirementsInstallFeedback.textContent +=
+      " pip is not available in the current virtual environment. Recreate the virtual environment.";
+  }
+}
+
+function renderRequirementsInstallStep(result) {
+  const requirements = result.requirements;
+
+  requirementsInstallCard.hidden = false;
+  requirementsInstallCard.dataset.state = "ready";
+  requirementsInstallStateLabel.textContent = "In progress";
+  requirementsInstallTitle.textContent = "Install project dependencies";
+  requirementsInstallCommand.textContent =
+    result.installCommand ||
+    ".\\.venv\\Scripts\\python.exe -m pip install -r requirements.txt";
+  requirementsCheckWorking.hidden = true;
+  checkRequirementsButton.disabled = false;
+  checkRequirementsLabel.textContent = "Check installation";
+  repairRequirementsButton.disabled = false;
+  renderRequirementStatus(requirements, result.pipAvailable);
+  pageTitle.textContent = "Install the dependencies in requirements.txt.";
+  introDescription.textContent =
+    "Copy the command above into a project terminal. When installation finishes, return here and check that every dependency passes.";
+}
+
+function renderLibraryState(result) {
+  libraryCatalog = result.libraries;
+  libraryPipAvailable = Boolean(result.pipAvailable);
+  libraryComplete.hidden = true;
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
+  libraryCard.hidden = true;
+
+  if (result.requirements?.exists) {
+    renderRequirementsComplete(result.requirements);
+    requirementsComplete.hidden = false;
+
+    if (result.requirements.allInstalled) {
+      renderLibraryComplete(
+        result.requirements.requirements.map((requirement) => ({
+          displayName: requirement.packageName,
+          version: requirement.version,
+        })),
+      );
+      libraryCompleteSummary.textContent =
+        `All ${result.requirements.requirements.length} dependencies are installed and verified`;
+      libraryComplete.hidden = false;
+      pageTitle.textContent = "Dependency installation complete.";
+      introDescription.textContent =
+        "Every dependency in requirements.txt passed the check. You can continue learning.";
+      return;
+    }
+
+    renderRequirementsInstallStep(result);
     return;
   }
 
+  libraryCard.hidden = false;
+  libraryCard.dataset.state = "ready";
+  libraryStateLabel.textContent = "In progress";
+  libraryTitle.textContent = "Create dependency manifest";
+  libraryFeedback.textContent = "";
+  libraryFeedback.dataset.kind = "";
+  libraryWorking.hidden = true;
+  renderLibraryList(result.libraries);
+  pageTitle.textContent = "Generate the project dependency manifest first.";
+  introDescription.textContent =
+    "Select Generate requirements.txt to create the manifest in the current project, then follow the next instructions to install.";
+}
+
+function showLibraryError(error) {
+  requirementsComplete.hidden = true;
+  requirementsInstallCard.hidden = true;
+  libraryComplete.hidden = true;
+  libraryCard.hidden = false;
   libraryCard.dataset.state = "error";
-  libraryStateLabel.textContent = "需要处理";
-  libraryTitle.textContent = "无法读取 Python 库";
+  libraryStateLabel.textContent = "Action needed";
+  libraryTitle.textContent = "Unable to load Python packages";
   libraryFeedback.dataset.kind = "error";
   libraryFeedback.textContent =
-    error.message || "无法读取 Python 库状态，请稍后重试。";
+    error.message || "Unable to load Python package status. Please try again.";
   libraryWorking.hidden = true;
-  installLibrariesButton.disabled = true;
+  generateRequirementsButton.disabled = true;
 }
 
 async function loadLibraryStatus() {
-  if (libraryCard.hidden || isInstallingLibraries) {
-    return;
-  }
-
-  libraryCard.dataset.state = "loading";
-  libraryStateLabel.textContent = "正在做";
-  libraryTitle.textContent = "导入 Python 库";
-  libraryFeedback.textContent = "";
-  libraryFeedback.dataset.kind = "";
-  libraryList.innerHTML =
-    '<p class="library-loading">正在读取已安装的 Python 库...</p>';
-
   const response = await fetch("/api/libraries", {
     method: "GET",
     cache: "no-store",
@@ -580,49 +2179,33 @@ async function loadLibraryStatus() {
   const result = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(result.message || "无法读取 Python 库状态。");
+    throw new Error(result.message || "Unable to load Python package status.");
   }
 
   if (result.state !== "ready") {
     libraryCard.hidden = true;
+    requirementsComplete.hidden = true;
+    requirementsInstallCard.hidden = true;
     return;
   }
 
-  libraryPipAvailable = Boolean(result.pipAvailable);
-
-  if (result.libraries.every((library) => library.installed)) {
-    renderLibraryComplete(result.libraries);
-    libraryCard.hidden = true;
-    libraryComplete.hidden = false;
-    pageTitle.textContent = "第一课的基础环境已准备完成。";
-    introDescription.textContent =
-      "Python、项目虚拟环境和课程库都已就绪，可以继续学习。";
-    return;
-  }
-
-  libraryComplete.hidden = true;
-  libraryCard.hidden = false;
-  renderLibraryList(result.libraries);
-
-  if (!libraryPipAvailable) {
-    libraryFeedback.dataset.kind = "error";
-    libraryFeedback.textContent =
-      "当前虚拟环境中没有可用的 pip，请重新创建虚拟环境。";
-  }
+  renderLibraryState(result);
 }
 
 function toggleAllLibraries() {
-  const installableLibraries = getInstallableLibraries();
+  const libraries = libraryCatalog;
 
-  if (installableLibraries.length === 0 || isInstallingLibraries) {
+  if (libraries.length === 0 || isGeneratingRequirements) {
     return;
   }
 
-  const allSelected = installableLibraries.every((library) =>
+  const allSelected = libraries.every((library) =>
     selectedLibraries.has(library.id),
   );
 
-  for (const library of installableLibraries) {
+  hasInitializedLibrarySelection = true;
+
+  for (const library of libraries) {
     if (allSelected) {
       selectedLibraries.delete(library.id);
     } else {
@@ -637,27 +2220,22 @@ function toggleAllLibraries() {
   updateLibraryControls();
 }
 
-async function installSelectedLibraries() {
-  const installableIds = new Set(
-    getInstallableLibraries().map((library) => library.id),
-  );
-  const libraries = [...selectedLibraries].filter((id) =>
-    installableIds.has(id),
-  );
+async function generateRequirements() {
+  const libraryIds = new Set(libraryCatalog.map((library) => library.id));
+  const libraries = [...selectedLibraries].filter((id) => libraryIds.has(id));
 
-  if (libraries.length === 0 || isInstallingLibraries) {
+  if (libraries.length === 0 || isGeneratingRequirements) {
     return;
   }
 
-  isInstallingLibraries = true;
-  let installErrorMessage = null;
-  libraryCard.dataset.state = "installing";
-  libraryStateLabel.textContent = "正在做";
-  libraryTitle.textContent = "正在安装 Python 库";
+  isGeneratingRequirements = true;
+  libraryCard.dataset.state = "generating";
+  libraryStateLabel.textContent = "In progress";
+  libraryTitle.textContent = "Generating dependency manifest";
   libraryFeedback.textContent = "";
   libraryFeedback.dataset.kind = "";
   libraryWorking.hidden = false;
-  installLibrariesButton.disabled = true;
+  generateRequirementsButton.disabled = true;
   selectAllLibrariesButton.disabled = true;
 
   for (const checkbox of libraryList.querySelectorAll("input")) {
@@ -665,7 +2243,7 @@ async function installSelectedLibraries() {
   }
 
   try {
-    const response = await fetch("/api/libraries/install", {
+    const response = await fetch("/api/libraries/requirements", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ libraries }),
@@ -673,52 +2251,116 @@ async function installSelectedLibraries() {
     const result = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      throw new Error(result.message || "Python 库安装失败。");
+      throw new Error(result.message || "Failed to generate requirements.txt.");
     }
 
-    selectedLibraries.clear();
+    await loadLibraryStatus();
+  } catch (error) {
+    libraryCard.dataset.state = "error";
+    libraryStateLabel.textContent = "Action needed";
+    libraryTitle.textContent = "Unable to generate dependency manifest";
+    libraryFeedback.dataset.kind = "error";
+    libraryFeedback.textContent =
+      error.message || "Unable to generate requirements.txt. Please try again.";
+  } finally {
+    isGeneratingRequirements = false;
     libraryWorking.hidden = true;
-    libraryCard.dataset.state = "ready";
-    libraryStateLabel.textContent = "已完成";
-    libraryFeedback.dataset.kind = "success";
-    libraryFeedback.textContent = "选中的 Python 库已安装完成。";
-    renderLibraryList(result.libraries);
+    updateLibraryControls();
+  }
+}
 
-    const allInstalled = result.libraries.every(
-      (library) => library.installed,
+async function checkRequirementsInstallation() {
+  if (isCheckingRequirements) {
+    return;
+  }
+
+  isCheckingRequirements = true;
+  requirementsCheckWorking.hidden = false;
+  requirementsInstallFeedback.textContent = "";
+  requirementsInstallFeedback.dataset.kind = "";
+  checkRequirementsButton.disabled = true;
+  repairRequirementsButton.disabled = true;
+  checkRequirementsLabel.textContent = "Checking...";
+
+  try {
+    await loadLibraryStatus();
+  } catch (error) {
+    requirementsInstallCard.dataset.state = "error";
+    requirementsInstallStateLabel.textContent = "Action needed";
+    requirementsInstallTitle.textContent = "Unable to complete the check";
+    requirementsInstallFeedback.dataset.kind = "error";
+    requirementsInstallFeedback.textContent =
+      error.message || "Unable to check installation status. Please try again.";
+  } finally {
+    isCheckingRequirements = false;
+    requirementsCheckWorking.hidden = true;
+
+    if (!requirementsInstallCard.hidden) {
+      checkRequirementsButton.disabled = false;
+      checkRequirementsLabel.textContent = "Check installation";
+      repairRequirementsButton.disabled = false;
+    }
+  }
+}
+
+async function copyRequirementsCommand() {
+  try {
+    await navigator.clipboard.writeText(
+      requirementsInstallCommand.textContent.trim(),
     );
+    copyRequirementsCommandButton.textContent = "Copied";
+    window.setTimeout(() => {
+      copyRequirementsCommandButton.textContent = "Copy command";
+    }, 1600);
+  } catch {
+    requirementsInstallFeedback.dataset.kind = "error";
+    requirementsInstallFeedback.textContent =
+      "Automatic copying failed. Select the command above and copy it manually.";
+  }
+}
 
-    if (allInstalled) {
-      libraryTitle.textContent = "Python 库已准备好";
-      pageTitle.textContent = "第一课的基础环境已准备完成。";
-      introDescription.textContent =
-        "Python、项目虚拟环境和课程库都已就绪，可以继续学习。";
-      renderLibraryComplete(result.libraries);
-      libraryCard.hidden = true;
-      libraryComplete.hidden = false;
+async function repairRequirementsFile() {
+  if (isRepairingRequirements) {
+    return;
+  }
+
+  isRepairingRequirements = true;
+  repairRequirementsButton.disabled = true;
+  repairRequirementsButton.textContent = "Generating...";
+  requirementsInstallFeedback.textContent = "";
+  requirementsInstallFeedback.dataset.kind = "";
+
+  try {
+    const response = await fetch("/api/libraries/requirements", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to regenerate requirements.txt.");
+    }
+
+    await loadLibraryStatus();
+
+    if (!requirementsInstallCard.hidden) {
+      requirementsInstallFeedback.dataset.kind = "success";
+      requirementsInstallFeedback.textContent =
+        "requirements.txt was regenerated. Run the installation command above again.";
     }
   } catch (error) {
-    installErrorMessage =
-      error.message || "安装失败，请检查网络后重试。";
+    requirementsInstallFeedback.dataset.kind = "error";
+    requirementsInstallFeedback.textContent =
+      error.message || "Failed to regenerate requirements.txt. Please try again.";
   } finally {
-    isInstallingLibraries = false;
-    libraryWorking.hidden = true;
+    isRepairingRequirements = false;
 
-    if (installErrorMessage) {
-      try {
-        await loadLibraryStatus();
-      } catch (refreshError) {
-        console.error("Unable to refresh library status:", refreshError);
-      }
-
-      libraryCard.dataset.state = "error";
-      libraryStateLabel.textContent = "需要处理";
-      libraryTitle.textContent = "Python 库安装失败";
-      libraryFeedback.dataset.kind = "error";
-      libraryFeedback.textContent = installErrorMessage;
+    if (!requirementsInstallCard.hidden) {
+      repairRequirementsButton.disabled = false;
     }
 
-    updateLibraryControls();
+    repairRequirementsButton.textContent = "Regenerate manifest";
   }
 }
 
@@ -733,7 +2375,7 @@ async function requestPythonDetection() {
   });
 
   if (!response.ok) {
-    throw new Error(`本地检测服务返回 ${response.status}`);
+    throw new Error(`Local detection service returned ${response.status}`);
   }
 
   return response.json();
@@ -746,7 +2388,7 @@ async function loadProject() {
   });
 
   if (!response.ok) {
-    throw new Error(`读取项目状态失败：${response.status}`);
+    throw new Error(`Unable to load project state: ${response.status}`);
   }
 
   const result = await response.json();
@@ -758,220 +2400,43 @@ async function loadProject() {
   }
 }
 
-async function loadFolderDirectory(directory) {
-  const requestId = ++folderRequestId;
-  const query = directory
-    ? `?path=${encodeURIComponent(directory)}`
-    : "";
-
-  folderError.textContent = "";
-  resetNewFolderForm();
-  currentFolderPath.textContent = "正在读取...";
-  folderList.replaceChildren();
-  confirmFolderButton.disabled = true;
-  showNewFolderButton.disabled = true;
-
-  const response = await fetch(`/api/folders${query}`, {
-    method: "GET",
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload.message || `无法读取文件夹：${response.status}`);
-  }
-
-  const result = await response.json();
-
-  if (requestId !== folderRequestId) {
-    return;
-  }
-
-  currentFolderPathValue = result.path;
-  currentFolderParent = result.parent;
-  currentFolderPath.textContent = result.path;
-  currentFolderPath.title = result.path;
-  folderUpButton.disabled = !result.parent;
-  confirmFolderButton.disabled = false;
-  showNewFolderButton.disabled = false;
-
-  driveList.replaceChildren();
-
-  for (const root of result.roots) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "drive-button";
-    button.textContent = root;
-    button.classList.toggle(
-      "is-current",
-      result.path.toLocaleLowerCase().startsWith(root.toLocaleLowerCase()),
-    );
-    button.addEventListener("click", () => {
-      loadFolderDirectory(root).catch(showFolderError);
-    });
-    driveList.append(button);
-  }
-
-  folderList.replaceChildren();
-
-  if (result.directories.length === 0) {
-    const emptyMessage = document.createElement("p");
-    emptyMessage.className = "folder-empty";
-    emptyMessage.textContent = "这个文件夹中没有子文件夹，可以直接选择它。";
-    folderList.append(emptyMessage);
-    return;
-  }
-
-  for (const directoryEntry of result.directories) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "folder-entry";
-    button.title = directoryEntry.path;
-
-    button.innerHTML = `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3.5 6.5h6l2 2h9v10h-17v-12Z"></path>
-        <path d="M3.5 9h17"></path>
-      </svg>
-      <span></span>
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m9 18 6-6-6-6"></path>
-      </svg>
-    `;
-    button.querySelector("span").textContent = directoryEntry.name;
-    button.addEventListener("click", () => {
-      loadFolderDirectory(directoryEntry.path).catch(showFolderError);
-    });
-    folderList.append(button);
-  }
-}
-
-function showFolderError(error) {
-  folderError.textContent =
-    error.message || "无法读取这个文件夹，请返回上一级重试。";
-  currentFolderPath.textContent = currentFolderPathValue || "读取失败";
-  confirmFolderButton.disabled = !currentFolderPathValue;
-  showNewFolderButton.disabled = true;
-}
-
-function resetNewFolderForm() {
-  newFolderForm.hidden = true;
-  newFolderName.value = "";
-  newFolderError.textContent = "";
-  createFolderButton.disabled = false;
-  createFolderButton.textContent = "创建";
-}
-
-function openNewFolderForm() {
-  if (!currentFolderPathValue || isCreatingFolder) {
-    return;
-  }
-
-  newFolderForm.hidden = false;
-  newFolderError.textContent = "";
-  newFolderName.value = "";
-  newFolderName.focus();
-}
-
-async function createProjectFolder(event) {
-  event.preventDefault();
-
-  if (!currentFolderPathValue || isCreatingFolder) {
-    return;
-  }
-
-  const folderName = newFolderName.value.trim();
-
-  if (!folderName) {
-    newFolderError.textContent = "请输入文件夹名称。";
-    newFolderName.focus();
-    return;
-  }
-
-  isCreatingFolder = true;
-  createFolderButton.disabled = true;
-  createFolderButton.textContent = "创建中...";
-  newFolderError.textContent = "";
-
-  try {
-    const response = await fetch("/api/folders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        parentPath: currentFolderPathValue,
-        name: folderName,
-      }),
-    });
-    const result = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(result.message || `创建文件夹失败：${response.status}`);
-    }
-
-    newFolderForm.hidden = true;
-    await loadFolderDirectory(result.path);
-  } catch (error) {
-    const message = error.message || "无法创建文件夹，请检查名称后重试。";
-
-    if (newFolderForm.hidden) {
-      folderError.textContent = message;
-    } else {
-      newFolderError.textContent = message;
-    }
-  } finally {
-    isCreatingFolder = false;
-    createFolderButton.disabled = false;
-    createFolderButton.textContent = "创建";
-  }
-}
-
-function closeFolderDialog() {
-  resetNewFolderForm();
-  folderDialog.close();
-}
-
-async function saveProjectFolder() {
-  if (!currentFolderPathValue || isSelectingFolder) {
+async function chooseProjectFolderFromSystem() {
+  if (isSelectingFolder) {
     return;
   }
 
   isSelectingFolder = true;
-  confirmFolderButton.disabled = true;
-  confirmFolderButton.textContent = "正在保存...";
-  folderError.textContent = "";
+  selectFolderButton.disabled = true;
+  selectFolderButton.setAttribute("aria-busy", "true");
+  selectFolderLabel.textContent = "Opening...";
 
   try {
-    const response = await fetch("/api/project", {
+    const response = await fetch("/api/project/choose", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: currentFolderPathValue }),
+      cache: "no-store",
     });
     const result = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      throw new Error(result.message || `保存文件夹失败：${response.status}`);
+      throw new Error(
+        result.message || `Unable to open the system folder picker: ${response.status}`,
+      );
     }
 
-    renderProjectSelection(result.path);
-    folderDialog.close();
+    if (result.selected && result.path) {
+      renderProjectSelection(result.path);
+    }
   } catch (error) {
-    folderError.textContent = error.message || "无法保存项目文件夹。";
+    const message =
+      error.message || "Unable to open the system folder picker. Please try again.";
     console.error("Project folder selection failed:", error);
+    window.alert(message);
   } finally {
     isSelectingFolder = false;
-    confirmFolderButton.disabled = false;
-    confirmFolderButton.textContent = "选择此文件夹";
+    selectFolderButton.disabled = false;
+    selectFolderButton.removeAttribute("aria-busy");
+    selectFolderLabel.textContent = selectedProjectPath ? "Change" : "Select";
   }
-}
-
-function openProjectFolderDialog() {
-  if (folderDialog.open) {
-    return;
-  }
-
-  resetNewFolderForm();
-  folderDialog.showModal();
-  loadFolderDirectory(selectedProjectPath).catch(showFolderError);
 }
 
 async function detectPython() {
@@ -990,42 +2455,42 @@ async function detectPython() {
     } else if (result.reason === "NO_PYTHON_FOUND") {
       renderMissing();
     } else {
-      renderError(result.message || "检测服务返回了未知结果。");
+      renderError(result.message || "The detection service returned an unknown result.");
     }
 
     renderCheckedTime(result.checkedAt);
   } catch (error) {
-    renderError("无法连接本地检测服务，请确认软件正在运行。");
+    renderError("Unable to connect to the local detection service. Confirm that the app is running.");
     console.error("Python detection failed:", error);
   } finally {
     isChecking = false;
     redetectButton.disabled = false;
-    redetectLabel.textContent = "重新检测";
+    redetectLabel.textContent = "Check again";
   }
 }
 
 redetectButton.addEventListener("click", detectPython);
 redetectCompleteButton.addEventListener("click", detectPython);
-selectFolderButton.addEventListener("click", openProjectFolderDialog);
-closeFolderDialogButton.addEventListener("click", closeFolderDialog);
-cancelFolderDialogButton.addEventListener("click", closeFolderDialog);
-folderUpButton.addEventListener("click", () => {
-  if (currentFolderParent) {
-    loadFolderDirectory(currentFolderParent).catch(showFolderError);
-  }
-});
-showNewFolderButton.addEventListener("click", openNewFolderForm);
-cancelNewFolderButton.addEventListener("click", resetNewFolderForm);
-newFolderForm.addEventListener("submit", createProjectFolder);
-confirmFolderButton.addEventListener("click", saveProjectFolder);
+selectFolderButton.addEventListener("click", chooseProjectFolderFromSystem);
 createVenvButton.addEventListener("click", createEnvironment);
 selectAllLibrariesButton.addEventListener("click", toggleAllLibraries);
-installLibrariesButton.addEventListener("click", installSelectedLibraries);
-folderDialog.addEventListener("click", (event) => {
-  if (event.target === folderDialog) {
-    closeFolderDialog();
-  }
-});
+generateRequirementsButton.addEventListener("click", generateRequirements);
+checkRequirementsButton.addEventListener(
+  "click",
+  checkRequirementsInstallation,
+);
+copyRequirementsCommandButton.addEventListener(
+  "click",
+  copyRequirementsCommand,
+);
+repairRequirementsButton.addEventListener(
+  "click",
+  repairRequirementsFile,
+);
+initializeAllLessonInteractions();
+initializeCourseExams();
+initializeSetupExamVisibility();
+initializeCourseNavigation();
 detectPython();
 loadProject().catch((error) => {
   console.error("Unable to load project state:", error);

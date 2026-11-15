@@ -35,7 +35,7 @@ async function validateDirectory(directory) {
   const details = await fs.stat(resolvedPath);
 
   if (!details.isDirectory()) {
-    throw new Error("选择的路径不是文件夹。");
+    throw new Error("The selected path is not a folder.");
   }
 
   return resolvedPath;
@@ -75,13 +75,13 @@ async function listDirectories(requestedPath) {
 
 async function createDirectory(parentPath, requestedName) {
   if (typeof requestedName !== "string") {
-    throw new Error("请输入文件夹名称。");
+    throw new Error("Enter a folder name.");
   }
 
   const folderName = requestedName.trim();
 
   if (!folderName) {
-    throw new Error("文件夹名称不能为空。");
+    throw new Error("The folder name cannot be empty.");
   }
 
   if (
@@ -90,15 +90,15 @@ async function createDirectory(parentPath, requestedName) {
     /[<>:"/\\|?*\u0000-\u001f]/.test(folderName) ||
     /[. ]$/.test(folderName)
   ) {
-    throw new Error("文件夹名称包含 Windows 不允许的字符。");
+    throw new Error("The folder name contains characters that Windows does not allow.");
   }
 
   if (/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\..*)?$/i.test(folderName)) {
-    throw new Error("这个名称是 Windows 保留名称，请换一个名称。");
+    throw new Error("This name is reserved by Windows. Choose another name.");
   }
 
   if (typeof parentPath !== "string" || !parentPath) {
-    throw new Error("请先打开一个文件夹。");
+    throw new Error("Open a folder first.");
   }
 
   const resolvedParent = await validateDirectory(parentPath);
@@ -108,7 +108,7 @@ async function createDirectory(parentPath, requestedName) {
     await fs.mkdir(newPath);
   } catch (error) {
     if (error.code === "EEXIST") {
-      throw new Error("当前文件夹中已经存在同名文件夹。");
+      throw new Error("A folder with this name already exists in the current folder.");
     }
     throw error;
   }

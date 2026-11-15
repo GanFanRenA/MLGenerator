@@ -21,6 +21,12 @@ jobs:
             artifact: macos
 
     runs-on: ${{ matrix.os }}
+    env:
+      CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
     steps:
       - name: Check out the project
@@ -42,15 +48,15 @@ jobs:
         if: matrix.artifact == 'windows'
         run: npm run dist:win
 
-      - name: Build macOS desktop packages
-        if: matrix.artifact == 'macos'
+      - name: Build macOS desktop packages (signed)
+        if: matrix.artifact == 'macos' && env.CSC_LINK != ''
         run: npm run dist:mac
-        env:
-          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: Build macOS desktop packages (unsigned)
+        if: matrix.artifact == 'macos' && env.CSC_LINK == ''
+        run: |
+          unset CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID
+          npm run dist:mac
 
       - name: Upload desktop package
         uses: actions/upload-artifact@v4

@@ -46,17 +46,17 @@ jobs:
 
       - name: Build Windows desktop package
         if: matrix.artifact == 'windows'
-        run: npm run dist:win
+        run: npm run dist:win -- --publish never
 
       - name: Build macOS desktop packages (signed)
         if: matrix.artifact == 'macos' && env.CSC_LINK != ''
-        run: npm run dist:mac
+        run: npm run dist:mac -- --publish never
 
       - name: Build macOS desktop packages (unsigned)
         if: matrix.artifact == 'macos' && env.CSC_LINK == ''
         run: |
           unset CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID
-          npm run dist:mac
+          npm run dist:mac -- --publish never
 
       - name: Upload desktop package
         uses: actions/upload-artifact@v4
